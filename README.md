@@ -26,6 +26,10 @@ npm run build
 
 GitHub リポジトリを Cloudflare Pages に接続すれば、`main` ブランチへの push ごとに再デプロイできます。
 
+## 画像
+
+`public/guides` と `public/events` に本番用画像を配置しています。画面側は `/guides/guide-1.png` などの静的パスで参照します。
+
 ## 補足
 
-`public/guides` と `public/events` の画像は、元画像未提供のため現在は仮画像です。正式画像に差し替える場合は同名ファイルを置き換えてください。
+Cloudflare Pages で変更が反映されない場合は、最新の `main` コミットが Production deployment に使われているか確認してください。
