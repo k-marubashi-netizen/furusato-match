@@ -40,16 +40,24 @@ export function LanguageBadge({ label }: { label: string }) {
 
 export function OriginLabel({ origin, className }: { origin: Origin; className?: string }) {
   const { t } = useLanguage()
-  const local = origin === 'local'
+
+  const style =
+    origin === 'local'
+      ? 'bg-primary/10 text-primary'
+      : origin === 'settler'
+        ? 'bg-yamabuki/25 text-yamabuki-foreground'
+        : 'bg-accent text-accent-foreground'
+
+  const label =
+    origin === 'local'
+      ? t('昔からの地元', 'Longtime local')
+      : origin === 'settler'
+        ? t('移り住んだ人', 'New resident')
+        : t('近隣から通う人', 'Nearby participant')
+
   return (
-    <span
-      className={cn(
-        'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium',
-        local ? 'bg-primary/10 text-primary' : 'bg-yamabuki/25 text-yamabuki-foreground',
-        className,
-      )}
-    >
-      {local ? t('昔からの地元', 'Longtime local') : t('移り住んだ人', 'New resident')}
+    <span className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium', style, className)}>
+      {label}
     </span>
   )
 }
