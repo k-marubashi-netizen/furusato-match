@@ -112,36 +112,36 @@ export type EventItem = {
 export const events: EventItem[] = [
   {
     id: 'e1',
-    title: '田んぼの畦道さんぽ',
+    title: '小谷・里山の知恵交換会',
     image: '/events/event-1.png',
     date: '9月20日(土) 15:00〜17:00',
-    place: '長野県・小谷村',
-    capacity: '定員 8名',
-    fee: '参加費 1,500円',
-    host: '山口 誠',
-    hostArea: '小谷村のふるさとガイド',
+    place: '長野県・小谷村公民館',
+    capacity: '定員 20名',
+    fee: '参加費 無料',
+    host: '小谷の住民・近隣大学生有志',
+    hostArea: '地元・近隣の人が中心',
   },
   {
     id: 'e2',
-    title: '地元の朝市めぐり',
+    title: '能登・朝市と食文化の持ち寄り会',
     image: '/events/event-2.png',
-    date: '9月21日(日) 7:00〜9:00',
-    place: '石川県・能登町',
-    capacity: '定員 6名',
-    fee: '参加費 2,000円',
-    host: '田村 さやか',
-    hostArea: '能登町のふるさとガイド',
+    date: '9月21日(日) 10:00〜12:00',
+    place: '石川県・能登町交流センター',
+    capacity: '定員 24名',
+    fee: '参加費 500円',
+    host: '能登の住民・移住者チーム',
+    hostArea: '地元・近隣の人が中心',
   },
   {
     id: 'e3',
-    title: '温泉マナー体験会',
+    title: '美山・暮らしとマナーの語り合い',
     image: '/events/event-3.png',
     date: '9月27日(土) 18:00〜19:30',
-    place: '京都府・美山町',
-    capacity: '定員 10名',
+    place: '京都府・美山町地域交流館',
+    capacity: '定員 30名',
     fee: '参加費 無料',
-    host: '小林 久子',
-    hostArea: '美山町のふるさとガイド',
+    host: '美山の世代交流メンバー',
+    hostArea: '住民・近隣学生・来訪者',
   },
 ]
 
@@ -149,6 +149,7 @@ export type ChatMessage = {
   from: 'me' | 'them'
   text: string
   translation?: string
+  originalLanguage?: 'ja' | 'en'
   time: string
 }
 
@@ -176,9 +177,9 @@ export const conversations: Conversation[] = [
     time: '10:24',
     messages: [
       { from: 'them', text: 'こんにちは！小谷村へようこそ。いつ頃いらっしゃいますか？', translation: 'Hello! Welcome to Otari. When are you planning to come?', time: '10:02' },
-      { from: 'me', text: 'Hello Makoto-san! I arrive next Saturday. So excited!', translation: 'マコトさんこんにちは！次の土曜に着きます。楽しみです！', time: '10:15' },
+      { from: 'me', text: 'Hello Makoto-san! I arrive next Saturday. So excited!', translation: 'マコトさんこんにちは！次の土曜に着きます。楽しみです！', originalLanguage: 'en', time: '10:15' },
       { from: 'them', text: 'それは良かった。畦道さんぽに一緒に行きましょう。', translation: "Wonderful. Let's go for the rice-path walk together.", time: '10:20' },
-      { from: 'them', text: 'Looking forward to walking with you!', time: '10:24' },
+      { from: 'them', text: 'Looking forward to walking with you!', translation: '一緒に歩けるのを楽しみにしています！', originalLanguage: 'en', time: '10:24' },
     ],
   },
   {
@@ -191,7 +192,7 @@ export const conversations: Conversation[] = [
     unread: 0,
     time: '昨日',
     messages: [
-      { from: 'me', text: 'Sayaka-san, what time does the morning market start?', translation: 'さやかさん、朝市は何時からですか？', time: '昨日 18:40' },
+      { from: 'me', text: 'Sayaka-san, what time does the morning market start?', translation: 'さやかさん、朝市は何時からですか？', originalLanguage: 'en', time: '昨日 18:40' },
       { from: 'them', text: '朝市は7時からですよ〜。早起きして行きましょう！', translation: 'The market starts at 7am. Let\'s wake up early and go!', time: '昨日 18:52' },
     ],
   },
@@ -206,7 +207,7 @@ export const conversations: Conversation[] = [
     time: '3日前',
     messages: [
       { from: 'them', text: '無事に着きましたか？またいつでも帰ってきてね。', translation: 'Did you get home safely? Come back anytime.', time: '3日前' },
-      { from: 'me', text: 'Thank you Hisako-san. I already miss Miyama. Tadaima soon!', translation: 'ひさこさんありがとう。もう美山が恋しいです。またすぐ「ただいま」します！', time: '3日前' },
+      { from: 'me', text: 'Thank you Hisako-san. I already miss Miyama. Tadaima soon!', translation: 'ひさこさんありがとう。もう美山が恋しいです。またすぐ「ただいま」します！', originalLanguage: 'en', time: '3日前' },
     ],
   },
 ]
