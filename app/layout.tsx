@@ -1,4 +1,3 @@
-import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_JP, Zen_Maru_Gothic } from 'next/font/google'
 import './globals.css'
@@ -19,7 +18,6 @@ export const metadata: Metadata = {
   title: 'ふるさとマッチ｜"ただいま"と言える場所をつくる',
   description:
     '訪日外国人と、地域に暮らす案内役「ふるさとガイド」をつなぐ交流マッチングアプリ。観光客を増やすのではなく、"ふるさと"を持つ人を増やす。',
-  generator: 'v0.app',
 }
 
 export const viewport: Viewport = {
@@ -38,10 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" className={`bg-background ${notoSansJP.variable} ${zenMaru.variable}`}>
-      <body className="font-sans antialiased">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
-      </body>
+      <body className="font-sans antialiased">{children}</body>
     </html>
   )
 }
