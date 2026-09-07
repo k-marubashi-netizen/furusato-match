@@ -9,6 +9,10 @@ import { useLanguage } from './language-context'
 const stepNotesJa = ['地域の人に教わる', '地域の人と一緒に案内', '自分で案内してみる', '次の人へ文化を伝える']
 const stepNotesEn = ['Learn from local people', 'Guide together with a local', 'Guide on your own', 'Pass local culture to the next person']
 const stepLabelsEn = ['Learn', 'Guide together', 'Go solo', 'Pass it on']
+const areaEn: Record<string, string> = {
+  '長野県・小谷村': 'Otari, Nagano',
+  '京都府・美山町': 'Miyama, Kyoto',
+}
 
 export function MyPageScreen() {
   const { lang, t } = useLanguage()
@@ -29,7 +33,7 @@ export function MyPageScreen() {
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 font-serif text-xl font-bold text-primary">EW</div>
           <div className="min-w-0">
             <p className="font-serif text-lg font-bold text-foreground">{u.name}</p>
-            <p className="text-xs text-muted-foreground">{t('出身', 'From')}：{u.country}</p>
+            <p className="text-xs text-muted-foreground">{t('出身：イギリス', 'From: United Kingdom')}</p>
             <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-yamabuki/25 px-2.5 py-0.5 text-[11px] font-bold text-yamabuki-foreground">
               <Sprout className="h-3 w-3" aria-hidden />{t('地域の知識度', 'Local knowledge')} Lv.{u.level}
             </span>
@@ -93,7 +97,7 @@ export function MyPageScreen() {
           {u.learnedAreas.map((area) => (
             <div key={area} className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3">
               <Heart className="h-4 w-4 shrink-0 fill-shu text-shu" aria-hidden />
-              <span className="text-sm font-medium text-foreground">{area}</span>
+              <span className="text-sm font-medium text-foreground">{lang === 'en' ? areaEn[area] ?? area : area}</span>
               <span className="ml-auto text-[11px] text-muted-foreground">{t('おかえり、が待っている', 'People are waiting for you')}</span>
             </div>
           ))}
