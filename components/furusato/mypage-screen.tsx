@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowRight, Check, Heart, MapPin, Sprout, Users } from 'lucide-react'
+import { ArrowRight, Check, Heart, MapPin, MessageCircle, Sprout, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { currentUser } from '@/lib/data'
 import { ScreenHeader } from './screen-header'
@@ -29,14 +29,22 @@ export function MyPageScreen() {
       />
 
       <div className="px-4 pt-3">
-        <div className="flex items-center gap-4 rounded-3xl border border-border bg-card p-4 shadow-sm">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 font-serif text-xl font-bold text-primary">EW</div>
-          <div className="min-w-0">
-            <p className="font-serif text-lg font-bold text-foreground">{u.name}</p>
-            <p className="text-xs text-muted-foreground">{t('出身：イギリス', 'From: United Kingdom')}</p>
-            <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-yamabuki/25 px-2.5 py-0.5 text-[11px] font-bold text-yamabuki-foreground">
-              <Sprout className="h-3 w-3" aria-hidden />{t('地域の知識度', 'Local knowledge')} Lv.{u.level}
-            </span>
+        <div className="rounded-3xl border border-border bg-card p-4 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 font-serif text-xl font-bold text-primary">EW</div>
+            <div className="min-w-0">
+              <p className="font-serif text-lg font-bold text-foreground">{u.name}</p>
+              <p className="text-xs text-muted-foreground">{t('出身：イギリス', 'From: United Kingdom')}</p>
+              <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-yamabuki/25 px-2.5 py-0.5 text-[11px] font-bold text-yamabuki-foreground">
+                <Sprout className="h-3 w-3" aria-hidden />{t('地域の知識度', 'Local knowledge')} Lv.{u.level}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-3 divide-x divide-border border-t border-border/70 pt-3 text-center">
+            <SocialStat value="86" label={t('フォロー中', 'Following')} />
+            <SocialStat value="124" label={t('フォロワー', 'Followers')} />
+            <SocialStat value="7" label={t('旅人DM', 'Traveler DMs')} icon />
           </div>
         </div>
       </div>
@@ -107,6 +115,18 @@ export function MyPageScreen() {
       <div className="px-4 pt-5">
         <button type="button" className="w-full rounded-full bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-sm">{t('STEP 3へ｜ふるさとガイドに挑戦する', 'STEP 3 | Try guiding on your own')}</button>
       </div>
+    </div>
+  )
+}
+
+function SocialStat({ value, label, icon = false }: { value: string; label: string; icon?: boolean }) {
+  return (
+    <div className="px-2">
+      <p className="flex items-center justify-center gap-1 font-serif text-base font-bold text-foreground">
+        {icon && <MessageCircle className="h-3.5 w-3.5 text-primary" aria-hidden />}
+        {value}
+      </p>
+      <p className="mt-0.5 truncate text-[10px] text-muted-foreground">{label}</p>
     </div>
   )
 }
