@@ -10,9 +10,10 @@ import { EventsScreen } from './events-screen'
 import { MessagesScreen } from './messages-screen'
 import { MyPageScreen } from './mypage-screen'
 import { GuideDetail } from './guide-detail'
+import { LanguageProvider, useLanguage } from './language-context'
 import type { Tab } from './types'
 
-const onboarding = [
+const onboardingJa = [
   {
     icon: HeartHandshake,
     kicker: '恋愛じゃなく、“交流”のマッチング',
@@ -33,7 +34,36 @@ const onboarding = [
   },
 ]
 
+const onboardingEn = [
+  {
+    icon: HeartHandshake,
+    kicker: 'A matching app for connection — not dating',
+    title: 'Meet people who truly know the place.',
+    body: 'Travelers, newcomers, and longtime residents connect across backgrounds and generations.',
+  },
+  {
+    icon: Home,
+    kicker: 'Not about increasing tourist numbers',
+    title: 'Create more people who have a “furusato.”',
+    body: 'Go beyond a one-time visit and build relationships that make you want to come back.',
+  },
+  {
+    icon: Sprout,
+    kicker: 'From learner to local guide',
+    title: 'The more you connect, the more you can pass on.',
+    body: 'STEP 1 Learn → STEP 2 Guide together → STEP 3 Guide independently → STEP 4 Pass it on.',
+  },
+]
+
 export function FurusatoApp() {
+  return (
+    <LanguageProvider>
+      <FurusatoAppInner />
+    </LanguageProvider>
+  )
+}
+
+function FurusatoAppInner() {
   const [tab, setTab] = useState<Tab>('search')
   const [activeGuide, setActiveGuide] = useState<Guide | null>(null)
   const [openConversationId, setOpenConversationId] = useState<string | null>(null)
@@ -80,7 +110,7 @@ export function FurusatoApp() {
           index={onboardingIndex}
           onSkip={() => setOnboardingOpen(false)}
           onNext={() => {
-            if (onboardingIndex === onboarding.length - 1) setOnboardingOpen(false)
+            if (onboardingIndex === onboardingJa.length - 1) setOnboardingOpen(false)
             else setOnboardingIndex((v) => v + 1)
           }}
         />
@@ -90,27 +120,29 @@ export function FurusatoApp() {
 }
 
 function Onboarding({ index, onSkip, onNext }: { index: number; onSkip: () => void; onNext: () => void }) {
-  const item = onboarding[index]
+  const { lang, t } = useLanguage()
+  const list = lang === 'ja' ? onboardingJa : onboardingEn
+  const item = list[index]
   const Icon = item.icon
-  const last = index === onboarding.length - 1
+  const last = index === list.length - 1
 
   return (
     <div className="absolute inset-0 z-50 flex items-end bg-foreground/45 p-3 backdrop-blur-sm">
-      <div className="w-full rounded-[2rem] bg-card p-5 shadow-2xl">
+      <div className="w-full rounded-[2rem] border border-white/20 bg-card p-5 shadow-2xl">
         <div className="flex items-center justify-between">
           <div className="flex gap-1.5">
-            {onboarding.map((_, i) => <span key={i} className={`h-1.5 rounded-full ${i === index ? 'w-8 bg-primary' : 'w-3 bg-border'}`} />)}
+            {list.map((_, i) => <span key={i} className={`h-1.5 rounded-full transition-all ${i === index ? 'w-8 bg-primary' : 'w-3 bg-border'}`} />)}
           </div>
-          <button type="button" onClick={onSkip} className="text-xs text-muted-foreground">スキップ</button>
+          <button type="button" onClick={onSkip} className="text-xs font-medium text-muted-foreground">{t('スキップ', 'Skip')}</button>
         </div>
         <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
           <Icon className="h-8 w-8" aria-hidden />
         </div>
-        <p className="mt-5 text-xs font-medium text-primary">{item.kicker}</p>
-        <h2 className="mt-1 font-serif text-2xl font-bold leading-tight text-foreground">{item.title}</h2>
+        <p className="mt-5 text-xs font-bold tracking-wide text-primary">{item.kicker}</p>
+        <h2 className="mt-1 text-balance font-serif text-2xl font-bold leading-tight text-foreground">{item.title}</h2>
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
-        <button type="button" onClick={onNext} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-medium text-primary-foreground">
-          {last ? 'ふるさとを探しにいく' : '次へ'}
+        <button type="button" onClick={onNext} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-sm">
+          {last ? t('ふるさとを探しにいく', 'Start exploring') : t('次へ', 'Next')}
           <ArrowRight className="h-4 w-4" aria-hidden />
         </button>
       </div>
@@ -119,18 +151,20 @@ function Onboarding({ index, onSkip, onNext }: { index: number; onSkip: () => vo
 }
 
 function CreateSheet({ onClose }: { onClose: () => void }) {
+  const { t } = useLanguage()
+
   return (
     <div className="absolute inset-0 z-40 flex items-end">
-      <button type="button" aria-label="閉じる" onClick={onClose} className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" />
+      <button type="button" aria-label={t('閉じる', 'Close')} onClick={onClose} className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" />
       <div className="relative z-10 w-full rounded-t-4xl border-t border-border bg-card p-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)]">
         <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-border" />
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-serif text-lg font-bold text-foreground">なにを投稿しますか？</h2>
-          <button type="button" onClick={onClose} aria-label="閉じる" className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-foreground"><X className="h-4 w-4" aria-hidden /></button>
+          <h2 className="font-serif text-lg font-bold text-foreground">{t('なにを投稿しますか？', 'What would you like to post?')}</h2>
+          <button type="button" onClick={onClose} aria-label={t('閉じる', 'Close')} className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-foreground"><X className="h-4 w-4" aria-hidden /></button>
         </div>
         <div className="space-y-3">
-          <CreateOption icon={CalendarHeart} title="交流イベントを開く" desc="地域の体験や集まりを募集します" />
-          <CreateOption icon={Footprints} title="一緒に歩く募集" desc="案内してほしい旅先を投稿します" />
+          <CreateOption icon={CalendarHeart} title={t('交流イベントを開く', 'Host a local event')} desc={t('地域の体験や集まりを募集します', 'Invite people to a local experience or gathering')} />
+          <CreateOption icon={Footprints} title={t('一緒に歩く募集', 'Find someone to walk with')} desc={t('案内してほしい旅先を投稿します', 'Post where you would like a local guide')} />
         </div>
       </div>
     </div>
