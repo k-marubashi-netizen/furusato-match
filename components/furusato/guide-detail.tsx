@@ -36,9 +36,9 @@ const guideEn: Record<string, {
   },
   g3: {
     name: 'Yosuke Nakamura',
-    area: 'Yame, Fukuoka',
-    intro: 'My family grows Yame tea. Ask me about food, markets, tea fields, and the stories behind local flavors.',
-    offers: ['Tea-field visit', 'How to enjoy the market', 'Local food tour'],
+    area: 'Yame, Fukuoka · nearby university student',
+    intro: 'I study in Fukuoka City and regularly visit Yame for fieldwork with tea farmers. Because I come from nearby rather than living here full-time, I can explain the area clearly to first-time visitors.',
+    offers: ['Tea-field visit', 'How to enjoy the market', 'Yame through a student perspective'],
     reviews: [
       { name: 'Olivia', country: 'United States', comment: 'The tea tasting was unforgettable. Yosuke is so warm!' },
       { name: 'Chen', country: 'China', comment: 'I fell in love with Yame tea.' },
