@@ -36,6 +36,12 @@ function FurusatoAppInner() {
     setTab('messages')
   }
 
+  function openConversation(conversationId: string) {
+    setActiveGuide(null)
+    setOpenConversationId(conversationId)
+    setTab('messages')
+  }
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-background">
       <div className="flex-1 overflow-y-auto overscroll-contain pb-24 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -43,7 +49,7 @@ function FurusatoAppInner() {
           <GuideDetail guide={activeGuide} onBack={() => setActiveGuide(null)} onMessage={goToMessages} />
         ) : (
           <>
-            {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} />}
+            {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} onOpenConversation={openConversation} />}
             {tab === 'events' && <EventsScreen />}
             {tab === 'messages' && <MessagesScreen initialConversationId={openConversationId} onConsumeInitial={() => setOpenConversationId(null)} />}
             {tab === 'mypage' && <MyPageScreen />}
@@ -139,8 +145,16 @@ function CreateSheet({ onClose }: { onClose: () => void }) {
           <button type="button" onClick={onClose} aria-label="close" className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-foreground"><X className="h-4 w-4" aria-hidden /></button>
         </div>
         <div className="space-y-3">
-          <CreateOption icon={CalendarHeart} title={t('交流イベントを開く', 'Host a local event')} desc={t('地域の体験や集まりを募集します', 'Invite people to a local experience or gathering')} />
-          <CreateOption icon={Footprints} title={t('一緒に歩く募集', 'Find someone to walk with')} desc={t('案内してほしい旅先を投稿します', 'Post a place you would like to explore together')} />
+          <CreateOption
+            icon={CalendarHeart}
+            title={t('地域の知識交換会を開く', 'Host a local knowledge exchange')}
+            desc={t('地元・近隣の人が文化や暮らしの知恵を持ち寄ります', 'Local and nearby people share culture, traditions, and everyday knowledge')}
+          />
+          <CreateOption
+            icon={Footprints}
+            title={t('一緒に歩く募集', 'Find someone to walk with')}
+            desc={t('案内してほしい旅先を投稿します', 'Post a place you would like to explore together')}
+          />
         </div>
       </div>
     </div>
