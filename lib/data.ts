@@ -1,4 +1,4 @@
-export type Origin = 'local' | 'settler'
+export type Origin = 'local' | 'settler' | 'nearby'
 
 export type Guide = {
   id: string
@@ -61,16 +61,16 @@ export const guides: Guide[] = [
     id: 'g3',
     name: '中村 陽介',
     kana: 'なかむら ようすけ',
-    area: '福岡県・八女市',
+    area: '福岡県・八女市（近隣大学生）',
     photo: '/guides/guide-3.png',
-    intro: '実家は八女茶の農家。食と市場のことなら任せてください！',
+    intro: '福岡市の大学に通いながら、八女の茶農家でフィールドワーク中。地域の外から通う立場だからこそ、初めての人にも分かりやすく案内します。',
     level: 3,
     languages: ['日本語', 'English', '翻訳機OK'],
     themes: ['食', '歴史'],
     rating: 4.7,
     reviewCount: 61,
-    origin: 'local',
-    offers: ['お茶畑の見学', '市場のあるき方', '郷土の味めぐり'],
+    origin: 'nearby',
+    offers: ['お茶畑の見学', '市場のあるき方', '学生目線の八女案内'],
     reviews: [
       { name: 'Olivia', country: 'アメリカ', rating: 5, comment: 'The tea tasting was unforgettable. Yosuke is so warm!' },
       { name: 'Chen', country: '中国', rating: 4, comment: '八女茶が大好きになりました。' },
