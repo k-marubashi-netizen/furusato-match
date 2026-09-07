@@ -1,9 +1,11 @@
 'use client'
 
-import { Check, Heart, MapPin, Sprout, Users } from 'lucide-react'
+import { Check, Heart, MapPin, Sprout, Users, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { currentUser } from '@/lib/data'
 import { ScreenHeader } from './screen-header'
+
+const stepNotes = ['地域の人に教わる', '地域の人と一緒に案内', '自分で案内してみる', '次の人へ文化を伝える']
 
 export function MyPageScreen() {
   const u = currentUser
@@ -20,8 +22,7 @@ export function MyPageScreen() {
             <p className="font-serif text-lg font-bold text-foreground">{u.name}</p>
             <p className="text-xs text-muted-foreground">出身：{u.country}</p>
             <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-yamabuki/25 px-2.5 py-0.5 text-[11px] font-medium text-yamabuki-foreground">
-              <Sprout className="h-3 w-3" aria-hidden />
-              地域の知識度 Lv.{u.level}
+              <Sprout className="h-3 w-3" aria-hidden />地域の知識度 Lv.{u.level}
             </span>
           </div>
         </div>
@@ -46,38 +47,50 @@ export function MyPageScreen() {
       </div>
 
       <div className="px-4 pt-4">
-        <h2 className="mb-2 font-serif text-sm font-bold text-foreground">ふるさとガイドへの道</h2>
+        <div className="mb-2 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-medium text-primary">LEARN → GUIDE → PASS IT ON</p>
+            <h2 className="font-serif text-base font-bold text-foreground">ふるさとガイドへの4 STEP</h2>
+          </div>
+          <span className="text-[11px] text-muted-foreground">今：STEP 2</span>
+        </div>
         <div className="rounded-3xl border border-border bg-card p-4">
-          <ol className="flex items-center justify-between">
+          <div className="space-y-3">
             {u.steps.map((step, i) => (
-              <li key={step.label} className="flex flex-1 flex-col items-center">
-                <div className="flex w-full items-center">
-                  <span className={cn('h-0.5 flex-1', i === 0 ? 'bg-transparent' : u.steps[i - 1].done ? 'bg-primary' : 'bg-border')} />
-                  <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-medium', step.done ? 'bg-primary text-primary-foreground' : 'border border-border bg-background text-muted-foreground')}>{step.done ? <Check className="h-4 w-4" aria-hidden /> : i + 1}</span>
-                  <span className={cn('h-0.5 flex-1', i === u.steps.length - 1 ? 'bg-transparent' : step.done ? 'bg-primary' : 'bg-border')} />
+              <div key={step.label} className="flex items-center gap-3">
+                <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold', step.done ? 'bg-primary text-primary-foreground' : 'border border-border bg-background text-muted-foreground')}>
+                  {step.done ? <Check className="h-4 w-4" aria-hidden /> : i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className={cn('font-serif text-sm font-bold', step.done ? 'text-foreground' : 'text-muted-foreground')}>STEP {i + 1}｜{step.label}</p>
+                  <p className="text-xs text-muted-foreground">{stepNotes[i]}</p>
                 </div>
-                <span className={cn('mt-1.5 text-center text-[11px] font-medium', step.done ? 'text-foreground' : 'text-muted-foreground')}>{step.label}</span>
-              </li>
+                {i < u.steps.length - 1 && <ArrowRight className="h-4 w-4 shrink-0 text-border" aria-hidden />}
+              </div>
             ))}
-          </ol>
+          </div>
+          <div className="mt-4 rounded-2xl bg-primary/5 p-3">
+            <p className="text-xs font-medium text-primary">外国から来た旅人も、地域を学べばガイド側へ。</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">「教わる人」で終わらず、何度も帰るうちに「次の人へ伝える人」になる循環をつくります。</p>
+          </div>
         </div>
       </div>
 
       <div className="px-4 pt-4">
-        <h2 className="mb-2 font-serif text-sm font-bold text-foreground">"ふるさと"になった場所</h2>
+        <h2 className="mb-2 font-serif text-sm font-bold text-foreground">“ふるさと”になった場所</h2>
         <div className="space-y-2">
           {u.learnedAreas.map((area) => (
             <div key={area} className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-3">
               <Heart className="h-4 w-4 shrink-0 fill-shu text-shu" aria-hidden />
               <span className="text-sm font-medium text-foreground">{area}</span>
-              <span className="ml-auto text-xs text-muted-foreground">ただいま、と言える</span>
+              <span className="ml-auto text-xs text-muted-foreground">おかえり、が待っている</span>
             </div>
           ))}
         </div>
       </div>
 
       <div className="px-4 pt-5">
-        <button type="button" className="w-full rounded-full border border-primary bg-card py-3 text-sm font-medium text-primary transition-colors active:bg-accent">ふるさとガイドに登録する</button>
+        <button type="button" className="w-full rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground">STEP 3へ｜ふるさとガイドに挑戦する</button>
       </div>
     </div>
   )
