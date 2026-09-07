@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CalendarHeart, Footprints, X } from 'lucide-react'
+import { ArrowRight, CalendarHeart, Footprints, HeartHandshake, Home, Sprout, X } from 'lucide-react'
 import type { Guide } from '@/lib/data'
 import { conversations } from '@/lib/data'
 import { TabBar } from './tab-bar'
@@ -12,11 +12,34 @@ import { MyPageScreen } from './mypage-screen'
 import { GuideDetail } from './guide-detail'
 import type { Tab } from './types'
 
+const onboarding = [
+  {
+    icon: HeartHandshake,
+    kicker: '恋愛じゃなく、“交流”のマッチング',
+    title: '会いたいのは、地域を知っている人。',
+    body: '外国人観光客、新しく暮らし始めた人、昔から地域で暮らす人。立場を越えてつながります。',
+  },
+  {
+    icon: Home,
+    kicker: '観光客を増やすのではなく',
+    title: '“ふるさと”を持つ人を増やす。',
+    body: '一度きりの観光ではなく、「会いたい人がいるから帰る」関係を地域につくります。',
+  },
+  {
+    icon: Sprout,
+    kicker: '教わる人から、伝える人へ',
+    title: '交流するほど、あなたもガイドに育つ。',
+    body: 'STEP1 教わる → STEP2 一緒に案内 → STEP3 独り立ち → STEP4 次へ伝える。',
+  },
+]
+
 export function FurusatoApp() {
   const [tab, setTab] = useState<Tab>('search')
   const [activeGuide, setActiveGuide] = useState<Guide | null>(null)
   const [openConversationId, setOpenConversationId] = useState<string | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
+  const [onboardingOpen, setOnboardingOpen] = useState(true)
+  const [onboardingIndex, setOnboardingIndex] = useState(0)
 
   function goToMessages(guide: Guide) {
     const convo = conversations.find((c) => c.guideId === guide.id)
@@ -34,12 +57,7 @@ export function FurusatoApp() {
           <>
             {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} />}
             {tab === 'events' && <EventsScreen />}
-            {tab === 'messages' && (
-              <MessagesScreen
-                initialConversationId={openConversationId}
-                onConsumeInitial={() => setOpenConversationId(null)}
-              />
-            )}
+            {tab === 'messages' && <MessagesScreen initialConversationId={openConversationId} onConsumeInitial={() => setOpenConversationId(null)} />}
             {tab === 'mypage' && <MyPageScreen />}
           </>
         )}
@@ -57,6 +75,45 @@ export function FurusatoApp() {
       )}
 
       {createOpen && <CreateSheet onClose={() => setCreateOpen(false)} />}
+      {onboardingOpen && (
+        <Onboarding
+          index={onboardingIndex}
+          onSkip={() => setOnboardingOpen(false)}
+          onNext={() => {
+            if (onboardingIndex === onboarding.length - 1) setOnboardingOpen(false)
+            else setOnboardingIndex((v) => v + 1)
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
+function Onboarding({ index, onSkip, onNext }: { index: number; onSkip: () => void; onNext: () => void }) {
+  const item = onboarding[index]
+  const Icon = item.icon
+  const last = index === onboarding.length - 1
+
+  return (
+    <div className="absolute inset-0 z-50 flex items-end bg-foreground/45 p-3 backdrop-blur-sm">
+      <div className="w-full rounded-[2rem] bg-card p-5 shadow-2xl">
+        <div className="flex items-center justify-between">
+          <div className="flex gap-1.5">
+            {onboarding.map((_, i) => <span key={i} className={`h-1.5 rounded-full ${i === index ? 'w-8 bg-primary' : 'w-3 bg-border'}`} />)}
+          </div>
+          <button type="button" onClick={onSkip} className="text-xs text-muted-foreground">スキップ</button>
+        </div>
+        <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Icon className="h-8 w-8" aria-hidden />
+        </div>
+        <p className="mt-5 text-xs font-medium text-primary">{item.kicker}</p>
+        <h2 className="mt-1 font-serif text-2xl font-bold leading-tight text-foreground">{item.title}</h2>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+        <button type="button" onClick={onNext} className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-medium text-primary-foreground">
+          {last ? 'ふるさとを探しにいく' : '次へ'}
+          <ArrowRight className="h-4 w-4" aria-hidden />
+        </button>
+      </div>
     </div>
   )
 }
@@ -69,21 +126,11 @@ function CreateSheet({ onClose }: { onClose: () => void }) {
         <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-border" />
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-serif text-lg font-bold text-foreground">なにを投稿しますか？</h2>
-          <button type="button" onClick={onClose} aria-label="閉じる" className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-foreground">
-            <X className="h-4 w-4" aria-hidden />
-          </button>
+          <button type="button" onClick={onClose} aria-label="閉じる" className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-foreground"><X className="h-4 w-4" aria-hidden /></button>
         </div>
         <div className="space-y-3">
-          <CreateOption
-            icon={CalendarHeart}
-            title="交流イベントを開く"
-            desc="地域の体験や集まりを募集します"
-          />
-          <CreateOption
-            icon={Footprints}
-            title="一緒に歩く募集"
-            desc="案内してほしい旅先を投稿します"
-          />
+          <CreateOption icon={CalendarHeart} title="交流イベントを開く" desc="地域の体験や集まりを募集します" />
+          <CreateOption icon={Footprints} title="一緒に歩く募集" desc="案内してほしい旅先を投稿します" />
         </div>
       </div>
     </div>
@@ -92,17 +139,9 @@ function CreateSheet({ onClose }: { onClose: () => void }) {
 
 function CreateOption({ icon: Icon, title, desc }: { icon: typeof Footprints; title: string; desc: string }) {
   return (
-    <button
-      type="button"
-      className="flex w-full items-center gap-3 rounded-2xl border border-border bg-background p-4 text-left transition-colors active:bg-secondary"
-    >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-        <Icon className="h-5 w-5" aria-hidden />
-      </span>
-      <span className="min-w-0">
-        <span className="block font-serif text-[15px] font-medium text-foreground">{title}</span>
-        <span className="block text-xs text-muted-foreground">{desc}</span>
-      </span>
+    <button type="button" className="flex w-full items-center gap-3 rounded-2xl border border-border bg-background p-4 text-left transition-colors active:bg-secondary">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"><Icon className="h-5 w-5" aria-hidden /></span>
+      <span className="min-w-0"><span className="block font-serif text-[15px] font-medium text-foreground">{title}</span><span className="block text-xs text-muted-foreground">{desc}</span></span>
     </button>
   )
 }
