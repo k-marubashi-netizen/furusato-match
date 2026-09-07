@@ -33,8 +33,8 @@ const guideEn: Record<string, { name: string; area: string; intro: string }> = {
   },
   g3: {
     name: 'Yosuke Nakamura',
-    area: 'Yame, Fukuoka',
-    intro: 'My family grows Yame tea. Ask me about tea fields, local markets, and the food culture of the area.',
+    area: 'Yame, Fukuoka · nearby university student',
+    intro: 'I study in Fukuoka City and regularly visit Yame for fieldwork with tea farmers. Because I come from nearby rather than living here full-time, I can explain the area clearly to first-time visitors.',
   },
   g4: {
     name: 'Hisako Kobayashi',
