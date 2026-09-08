@@ -59,10 +59,10 @@ const guideEn: Record<string, {
 export function GuideDetail({ guide, onBack, onMessage }: { guide: Guide; onBack: () => void; onMessage: (guide: Guide) => void }) {
   const { lang, t } = useLanguage()
   const en = guideEn[guide.id]
-  const name = lang === 'en' ? en?.name ?? guide.name : guide.name
-  const area = lang === 'en' ? en?.area ?? guide.area : guide.area
-  const intro = lang === 'en' ? en?.intro ?? guide.intro : guide.intro
-  const offers = lang === 'en' ? en?.offers ?? guide.offers : guide.offers
+  const name = lang === 'ja' ? guide.name : en?.name ?? guide.name
+  const area = lang === 'ja' ? guide.area : en?.area ?? guide.area
+  const intro = lang === 'ja' ? guide.intro : en?.intro ?? guide.intro
+  const offers = lang === 'ja' ? guide.offers : en?.offers ?? guide.offers
 
   return (
     <div className="flex flex-col pb-28">
@@ -120,13 +120,16 @@ export function GuideDetail({ guide, onBack, onMessage }: { guide: Guide; onBack
           <div className="space-y-2.5">
             {guide.reviews.map((review, i) => {
               const translated = en?.reviews[i]
+              const reviewName = lang === 'ja' ? review.name : translated?.name ?? review.name
+              const reviewCountry = lang === 'ja' ? review.country : translated?.country ?? review.country
+              const reviewComment = lang === 'ja' ? review.comment : translated?.comment ?? review.comment
               return (
                 <div key={i} className="rounded-2xl border border-border bg-card p-3">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-foreground">{lang === 'en' ? translated?.name ?? review.name : review.name} <span className="text-xs font-normal text-muted-foreground">・{lang === 'en' ? translated?.country ?? review.country : review.country}</span></p>
+                    <p className="text-sm font-medium text-foreground">{reviewName} <span className="text-xs font-normal text-muted-foreground">・{reviewCountry}</span></p>
                     <span className="flex items-center gap-0.5">{Array.from({ length: review.rating }).map((_, s) => <Star key={s} className="h-3.5 w-3.5 fill-yamabuki text-yamabuki" aria-hidden />)}</span>
                   </div>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-foreground/80">{lang === 'en' ? translated?.comment ?? review.comment : review.comment}</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-foreground/80">{reviewComment}</p>
                 </div>
               )
             })}
