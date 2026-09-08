@@ -50,7 +50,7 @@ export function SearchScreen({
   onOpenGuide: (guide: Guide) => void
   onOpenConversation: (conversationId: string) => void
 }) {
-  const { lang, t } = useLanguage()
+  const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [theme, setTheme] = useState<(typeof themes)[number]>('すべて')
   const [followStates, setFollowStates] = useState<Record<string, FollowState>>(
@@ -168,7 +168,7 @@ export function SearchScreen({
                   theme === item ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-card text-muted-foreground',
                 )}
               >
-                {lang === 'ja' ? item : themeEn[item]}
+                {t(item, themeEn[item])}
               </button>
             ))}
           </div>
@@ -308,9 +308,9 @@ function TravelerCard({
 function GuideCard({ guide, onClick }: { guide: Guide; onClick: () => void }) {
   const { lang, t } = useLanguage()
   const en = guideEn[guide.id]
-  const name = lang === 'en' ? en?.name ?? guide.name : guide.name
-  const area = lang === 'en' ? en?.area ?? guide.area : guide.area
-  const intro = lang === 'en' ? en?.intro ?? guide.intro : guide.intro
+  const name = lang === 'ja' ? guide.name : en?.name ?? guide.name
+  const area = lang === 'ja' ? guide.area : en?.area ?? guide.area
+  const intro = lang === 'ja' ? guide.intro : en?.intro ?? guide.intro
 
   return (
     <button type="button" onClick={onClick} className="w-full overflow-hidden rounded-3xl border border-border bg-card text-left shadow-sm transition-transform active:scale-[0.99]">
