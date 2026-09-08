@@ -20,20 +20,20 @@ const languageMap: Record<string, string> = {
 }
 
 export function ThemeTag({ label }: { label: string }) {
-  const { lang } = useLanguage()
+  const { t } = useLanguage()
   return (
     <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground">
-      {lang === 'en' ? themeMap[label] ?? label : label}
+      {t(label, themeMap[label] ?? label)}
     </span>
   )
 }
 
 export function LanguageBadge({ label }: { label: string }) {
-  const { lang } = useLanguage()
+  const { t } = useLanguage()
   return (
     <span className="inline-flex items-center gap-1 rounded-full border border-primary/25 px-2 py-0.5 text-[11px] font-medium text-primary">
       <Languages className="h-3 w-3" aria-hidden />
-      {lang === 'en' ? languageMap[label] ?? label : label}
+      {t(label, languageMap[label] ?? label)}
     </span>
   )
 }
