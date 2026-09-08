@@ -1,38 +1,43 @@
 'use client'
 
 import { Home } from 'lucide-react'
-import { LanguageToggle, useLanguage, type AppLanguage } from './language-context'
+import { LanguageToggle, useLanguage } from './language-context'
+import { localize, type LocalizedText } from './locale-utils'
 
-const titleTranslations: Record<string, Partial<Record<AppLanguage, string>>> = {
-  '地域の交流会': { en: 'Local Gatherings', zh: '当地交流会', es: 'Encuentros locales', de: 'Lokale Treffen', fr: 'Rencontres locales', it: 'Incontri locali' },
-  'メッセージ': { en: 'Messages', zh: '消息', es: 'Mensajes', de: 'Nachrichten', fr: 'Messages', it: 'Messaggi' },
-  'マイページ': { en: 'My Page', zh: '我的页面', es: 'Mi página', de: 'Mein Bereich', fr: 'Mon espace', it: 'Il mio profilo' },
+const titleTranslations: Record<string, LocalizedText> = {
+  イベント: { ja: 'イベント', en: 'Events', zh: '活动', es: 'Eventos', de: 'Events', fr: 'Événements', it: 'Eventi' },
+  メッセージ: { ja: 'メッセージ', en: 'Messages', zh: '消息', es: 'Mensajes', de: 'Nachrichten', fr: 'Messages', it: 'Messaggi' },
+  マイページ: { ja: 'マイページ', en: 'My Page', zh: '我的主页', es: 'Mi perfil', de: 'Mein Profil', fr: 'Mon profil', it: 'Il mio profilo' },
+  地域の交流会: { ja: '地域の交流会', en: 'Local Gatherings', zh: '当地交流会', es: 'Encuentros locales', de: 'Lokale Treffen', fr: 'Rencontres locales', it: 'Incontri locali' },
 }
 
-const subtitleTranslations: Record<string, Partial<Record<AppLanguage, string>>> = {
-  '言葉が違っても、気持ちは翻訳できる。': {
-    en: 'Different languages, same feelings — translation helps us connect.',
-    zh: '语言不同，心意也能被翻译。',
-    es: 'Idiomas distintos, sentimientos compartidos: la traducción nos conecta.',
-    de: 'Andere Sprachen, gleiche Gefühle – Übersetzung verbindet.',
-    fr: 'Des langues différentes, des émotions partagées : la traduction nous rapproche.',
-    it: 'Lingue diverse, emozioni condivise: la traduzione ci avvicina.',
+const subtitleTranslations: Record<string, LocalizedText> = {
+  '地域の人と旅行者が、実際に会って一緒に過ごす。興味に合う交流を選べます。': {
+    ja: '地域の人と旅行者が、実際に会って一緒に過ごす。興味に合う交流を選べます。',
+    en: 'Meet local people in person and choose the kind of exchange that fits your trip.',
+    zh: '与当地人真正见面并一起度过时间，选择适合自己的交流方式。',
+    es: 'Conoce a gente local en persona y elige el tipo de intercambio que encaje con tu viaje.',
+    de: 'Triff Menschen vor Ort persönlich und wähle die Begegnung, die zu deiner Reise passt.',
+    fr: 'Rencontrez les habitants en personne et choisissez le type d’échange qui correspond à votre voyage.',
+    it: 'Incontra le persone del posto e scegli il tipo di scambio più adatto al tuo viaggio.',
+  },
+  'ガイドにも、旅人にも。フォローからDMへつながります。': {
+    ja: 'ガイドにも、旅人にも。フォローからDMへつながります。',
+    en: 'Message guides and fellow travelers. A follow can become a conversation.',
+    zh: '可以给向导和其他旅人发消息，从关注开始一段交流。',
+    es: 'Escribe a guías y otros viajeros. Un seguimiento puede convertirse en una conversación.',
+    de: 'Schreibe Guides und anderen Reisenden. Aus einem Follow kann ein Gespräch werden.',
+    fr: 'Écrivez aux guides et aux autres voyageurs. Un abonnement peut devenir une conversation.',
+    it: 'Scrivi a guide e altri viaggiatori. Da un follow può nascere una conversazione.',
   },
   'あなたも、いつか誰かの「ふるさとガイド」に。': {
-    en: 'One day, you can become someone else’s Furusato Guide.',
-    zh: '有一天，你也可以成为别人的“故乡向导”。',
-    es: 'Algún día, tú también podrás ser el guía Furusato de otra persona.',
-    de: 'Eines Tages kannst auch du für jemand anderen ein Furusato-Guide sein.',
-    fr: 'Un jour, vous pourrez vous aussi devenir le guide Furusato de quelqu’un.',
-    it: 'Un giorno anche tu potrai diventare la guida Furusato di qualcun altro.',
-  },
-  '地元・近隣の人が知識を持ち寄る場所。外国人旅行者も、地域を学ぶ参加者として加われます。': {
-    en: 'Local and nearby people share what they know. International visitors are welcome to join and learn.',
-    zh: '当地和周边的人分享彼此的知识，外国旅人也可以作为学习者参加。',
-    es: 'Personas locales y cercanas comparten lo que saben. Los viajeros internacionales también pueden participar para aprender.',
-    de: 'Menschen aus der Region und Umgebung teilen ihr Wissen. Internationale Reisende können zum Lernen teilnehmen.',
-    fr: 'Les habitants et les personnes des environs partagent leurs connaissances. Les voyageurs internationaux peuvent aussi participer pour apprendre.',
-    it: 'Persone locali e dei dintorni condividono ciò che sanno. Anche i viaggiatori internazionali possono partecipare per imparare.',
+    ja: 'あなたも、いつか誰かの「ふるさとガイド」に。',
+    en: "Learn the place, build relationships, and one day become someone else's Furusato Guide.",
+    zh: '了解一个地方、建立关系，有一天你也可以成为别人的“故乡向导”。',
+    es: 'Conoce el lugar, crea vínculos y algún día conviértete en el guía Furusato de otra persona.',
+    de: 'Lerne den Ort kennen, baue Beziehungen auf und werde eines Tages selbst Furusato-Guide.',
+    fr: 'Découvrez le lieu, créez des liens et devenez un jour le guide Furusato de quelqu’un.',
+    it: 'Conosci il luogo, crea legami e un giorno diventa la guida Furusato di qualcun altro.',
   },
 }
 
@@ -47,12 +52,18 @@ export function ScreenHeader({
   subtitle?: string
   subtitleEn?: string
 }) {
-  const { lang, t } = useLanguage()
-  const localizedTitle = lang === 'ja' ? title : titleTranslations[title]?.[lang] ?? t(title, titleEn ?? title)
+  const { lang } = useLanguage()
+  const localizedTitle = titleTranslations[title]
+    ? localize(lang, titleTranslations[title])
+    : lang === 'ja'
+      ? title
+      : titleEn ?? title
   const localizedSubtitle = subtitle
-    ? lang === 'ja'
-      ? subtitle
-      : subtitleTranslations[subtitle]?.[lang] ?? t(subtitle, subtitleEn ?? subtitle)
+    ? subtitleTranslations[subtitle]
+      ? localize(lang, subtitleTranslations[subtitle])
+      : lang === 'ja'
+        ? subtitle
+        : subtitleEn ?? subtitle
     : undefined
 
   return (
@@ -72,9 +83,7 @@ export function ScreenHeader({
 
       <div className="pt-4">
         <h1 className="text-balance font-serif text-[25px] font-bold leading-tight text-foreground">{localizedTitle}</h1>
-        {localizedSubtitle && (
-          <p className="mt-1.5 text-pretty text-[13px] leading-relaxed text-muted-foreground">{localizedSubtitle}</p>
-        )}
+        {localizedSubtitle && <p className="mt-1.5 text-pretty text-[13px] leading-relaxed text-muted-foreground">{localizedSubtitle}</p>}
       </div>
     </header>
   )
