@@ -4,16 +4,48 @@ import Image from 'next/image'
 import { CalendarDays, MapPin, Plus, Users, Wallet, Handshake, BookOpen, Globe2 } from 'lucide-react'
 import { events, type EventItem } from '@/lib/data'
 import { ScreenHeader } from './screen-header'
-import { useLanguage } from './language-context'
+import { useLanguage, type AppLanguage } from './language-context'
+
+type EventLocale = {
+  title: string
+  date: string
+  place: string
+  capacity: string
+  fee: string
+  host: string
+  hostArea: string
+}
+
+type NonJaLanguage = Exclude<AppLanguage, 'ja'>
+
+const eventLocales: Record<string, Record<NonJaLanguage, EventLocale>> = {
+  e1: {
+    en: { title: 'Otari Satoyama Knowledge Exchange', date: 'Sat, Sep 20 · 3:00–5:00 PM', place: 'Otari Community Hall, Nagano', capacity: '20 people', fee: 'Free', host: 'Otari residents & nearby university students', hostArea: 'Mainly local and nearby participants' },
+    zh: { title: '小谷里山知识交流会', date: '9月20日（周六）15:00–17:00', place: '长野县 小谷村社区会馆', capacity: '20人', fee: '免费', host: '小谷居民与附近大学生', hostArea: '以当地及周边参与者为主' },
+    es: { title: 'Intercambio de conocimientos de satoyama en Otari', date: 'Sáb, 20 sep · 15:00–17:00', place: 'Centro comunitario de Otari, Nagano', capacity: '20 personas', fee: 'Gratis', host: 'Residentes de Otari y universitarios cercanos', hostArea: 'Principalmente participantes locales y cercanos' },
+    de: { title: 'Satoyama-Wissensaustausch in Otari', date: 'Sa., 20. Sep. · 15:00–17:00', place: 'Gemeindezentrum Otari, Nagano', capacity: '20 Personen', fee: 'Kostenlos', host: 'Bewohner von Otari & Studierende aus der Umgebung', hostArea: 'Vor allem lokale und nahegelegene Teilnehmende' },
+    fr: { title: 'Échange de savoirs satoyama à Otari', date: 'Sam. 20 sept. · 15:00–17:00', place: 'Maison communautaire d’Otari, Nagano', capacity: '20 personnes', fee: 'Gratuit', host: 'Habitants d’Otari et étudiants des environs', hostArea: 'Principalement des participants locaux et proches' },
+    it: { title: 'Scambio di conoscenze sul satoyama a Otari', date: 'Sab 20 set · 15:00–17:00', place: 'Centro comunitario di Otari, Nagano', capacity: '20 persone', fee: 'Gratuito', host: 'Residenti di Otari e studenti universitari vicini', hostArea: 'Soprattutto partecipanti locali e dei dintorni' },
+  },
+  e2: {
+    en: { title: 'Noto Morning Market & Food Culture Exchange', date: 'Sun, Sep 21 · 10:00 AM–12:00 PM', place: 'Noto Community Center, Ishikawa', capacity: '24 people', fee: '¥500', host: 'Noto residents & newcomer team', hostArea: 'Mainly local and nearby participants' },
+    zh: { title: '能登早市与饮食文化交流会', date: '9月21日（周日）10:00–12:00', place: '石川县 能登社区中心', capacity: '24人', fee: '500日元', host: '能登居民与新居民团队', hostArea: '以当地及周边参与者为主' },
+    es: { title: 'Mercado matinal y cultura gastronómica de Noto', date: 'Dom, 21 sep · 10:00–12:00', place: 'Centro comunitario de Noto, Ishikawa', capacity: '24 personas', fee: '¥500', host: 'Residentes de Noto y nuevos vecinos', hostArea: 'Principalmente participantes locales y cercanos' },
+    de: { title: 'Noto-Morgenmarkt & Esskultur-Austausch', date: 'So., 21. Sep. · 10:00–12:00', place: 'Gemeindezentrum Noto, Ishikawa', capacity: '24 Personen', fee: '¥500', host: 'Bewohner von Noto & Zugezogene', hostArea: 'Vor allem lokale und nahegelegene Teilnehmende' },
+    fr: { title: 'Marché du matin et culture culinaire de Noto', date: 'Dim. 21 sept. · 10:00–12:00', place: 'Centre communautaire de Noto, Ishikawa', capacity: '24 personnes', fee: '500 ¥', host: 'Habitants de Noto et nouveaux arrivants', hostArea: 'Principalement des participants locaux et proches' },
+    it: { title: 'Mercato mattutino e cultura gastronomica di Noto', date: 'Dom 21 set · 10:00–12:00', place: 'Centro comunitario di Noto, Ishikawa', capacity: '24 persone', fee: '¥500', host: 'Residenti di Noto e nuovi abitanti', hostArea: 'Soprattutto partecipanti locali e dei dintorni' },
+  },
+  e3: {
+    en: { title: 'Miyama Local Life & Manners Roundtable', date: 'Sat, Sep 27 · 6:00–7:30 PM', place: 'Miyama Community Exchange Hall, Kyoto', capacity: '30 people', fee: 'Free', host: 'Miyama intergenerational community members', hostArea: 'Residents, nearby students and visitors' },
+    zh: { title: '美山生活与礼仪交流会', date: '9月27日（周六）18:00–19:30', place: '京都府 美山社区交流馆', capacity: '30人', fee: '免费', host: '美山跨世代社区成员', hostArea: '居民、附近学生与访客' },
+    es: { title: 'Mesa redonda sobre vida local y modales en Miyama', date: 'Sáb, 27 sep · 18:00–19:30', place: 'Centro de intercambio comunitario de Miyama, Kioto', capacity: '30 personas', fee: 'Gratis', host: 'Miembros de distintas generaciones de Miyama', hostArea: 'Residentes, estudiantes cercanos y visitantes' },
+    de: { title: 'Gesprächsrunde zu Alltag & Umgangsformen in Miyama', date: 'Sa., 27. Sep. · 18:00–19:30', place: 'Gemeinschaftshaus Miyama, Kyoto', capacity: '30 Personen', fee: 'Kostenlos', host: 'Mehrgenerationen-Gemeinschaft Miyama', hostArea: 'Bewohner, Studierende aus der Umgebung und Besucher' },
+    fr: { title: 'Table ronde sur la vie locale et les usages à Miyama', date: 'Sam. 27 sept. · 18:00–19:30', place: 'Maison d’échange communautaire de Miyama, Kyoto', capacity: '30 personnes', fee: 'Gratuit', host: 'Membres de plusieurs générations de Miyama', hostArea: 'Habitants, étudiants des environs et visiteurs' },
+    it: { title: 'Incontro su vita locale e buone maniere a Miyama', date: 'Sab 27 set · 18:00–19:30', place: 'Centro di scambio comunitario di Miyama, Kyoto', capacity: '30 persone', fee: 'Gratuito', host: 'Comunità intergenerazionale di Miyama', hostArea: 'Residenti, studenti vicini e visitatori' },
+  },
+}
 
 const eventMeta: Record<string, {
-  titleEn: string
-  dateEn: string
-  placeEn: string
-  capacityEn: string
-  feeEn: string
-  hostEn: string
-  hostAreaEn: string
   descriptionJa: string
   descriptionEn: string
   audienceJa: string
@@ -22,49 +54,22 @@ const eventMeta: Record<string, {
   visitorEn: string
 }> = {
   e1: {
-    titleEn: 'Otari Satoyama Knowledge Exchange',
-    dateEn: 'Sat, Sep 20 · 3:00–5:00 PM',
-    placeEn: 'Otari Community Hall, Nagano',
-    capacityEn: '20 people',
-    feeEn: 'Free',
-    hostEn: 'Otari residents & nearby university students',
-    hostAreaEn: 'Mainly local and nearby participants',
     descriptionJa: '雪国の暮らし、山菜、田畑、里山の歩き方。昔からの住民と近隣の学生が、地域の知恵を持ち寄って交換します。',
     descriptionEn: 'Residents and nearby students share knowledge about snowy-country life, wild plants, farming, and how people live with the satoyama landscape.',
-    audienceJa: '地元住民・近隣の大学生や社会人',
-    audienceEn: 'Residents, nearby students and workers',
-    visitorJa: '外国人旅行者も「教わる側」として参加OK',
-    visitorEn: 'International visitors are welcome to join as learners',
+    audienceJa: '地元住民・近隣の大学生や社会人', audienceEn: 'Residents, nearby students and workers',
+    visitorJa: '外国人旅行者も「教わる側」として参加OK', visitorEn: 'International visitors are welcome to join as learners',
   },
   e2: {
-    titleEn: 'Noto Morning Market & Food Culture Exchange',
-    dateEn: 'Sun, Sep 21 · 10:00 AM–12:00 PM',
-    placeEn: 'Noto Community Center, Ishikawa',
-    capacityEn: '24 people',
-    feeEn: '¥500',
-    hostEn: 'Noto residents & newcomer team',
-    hostAreaEn: 'Mainly local and nearby participants',
     descriptionJa: '朝市での買い方、発酵食、家庭の味。昔からの住民と移住者が、それぞれの「知っている能登」を持ち寄ります。',
     descriptionEn: 'Longtime residents and newcomers compare what they know about the morning market, fermented foods, and everyday home cooking in Noto.',
-    audienceJa: '地元住民・移住者・近隣の人',
-    audienceEn: 'Residents, newcomers and nearby people',
-    visitorJa: '旅行者も地域文化を学ぶ参加者として歓迎',
-    visitorEn: 'Travelers are welcome as participants learning local culture',
+    audienceJa: '地元住民・移住者・近隣の人', audienceEn: 'Residents, newcomers and nearby people',
+    visitorJa: '旅行者も地域文化を学ぶ参加者として歓迎', visitorEn: 'Travelers are welcome as participants learning local culture',
   },
   e3: {
-    titleEn: 'Miyama Local Life & Manners Roundtable',
-    dateEn: 'Sat, Sep 27 · 6:00–7:30 PM',
-    placeEn: 'Miyama Community Exchange Hall, Kyoto',
-    capacityEn: '30 people',
-    feeEn: 'Free',
-    hostEn: 'Miyama intergenerational community members',
-    hostAreaEn: 'Residents, nearby students and visitors',
     descriptionJa: 'お風呂、季節の行事、ご近所づきあい。世代ごとに違う暮らしの知恵やマナーを語り合い、次の人へ残します。',
     descriptionEn: 'People of different generations talk about bathing culture, seasonal customs, neighborly life, and the local manners they want to pass on.',
-    audienceJa: '地元住民・近隣学生・地域に関わる人',
-    audienceEn: 'Residents, nearby students and people connected to the area',
-    visitorJa: '外国人も質問しながら参加できます',
-    visitorEn: 'International visitors can join, listen and ask questions',
+    audienceJa: '地元住民・近隣学生・地域に関わる人', audienceEn: 'Residents, nearby students and people connected to the area',
+    visitorJa: '外国人も質問しながら参加できます', visitorEn: 'International visitors can join, listen and ask questions',
   },
 }
 
@@ -101,16 +106,17 @@ export function EventsScreen() {
 function EventCard({ event }: { event: EventItem }) {
   const { lang, t } = useLanguage()
   const meta = eventMeta[event.id]
-  const title = lang === 'en' ? meta.titleEn : event.title
-  const date = lang === 'en' ? meta.dateEn : event.date
-  const place = lang === 'en' ? meta.placeEn : event.place
-  const capacity = lang === 'en' ? meta.capacityEn : event.capacity
-  const fee = lang === 'en' ? meta.feeEn : event.fee
-  const host = lang === 'en' ? meta.hostEn : event.host
-  const hostArea = lang === 'en' ? meta.hostAreaEn : event.hostArea
-  const description = lang === 'en' ? meta.descriptionEn : meta.descriptionJa
-  const audience = lang === 'en' ? meta.audienceEn : meta.audienceJa
-  const visitor = lang === 'en' ? meta.visitorEn : meta.visitorJa
+  const locale = lang === 'ja' ? null : eventLocales[event.id]?.[lang]
+  const title = locale?.title ?? event.title
+  const date = locale?.date ?? event.date
+  const place = locale?.place ?? event.place
+  const capacity = locale?.capacity ?? event.capacity
+  const fee = locale?.fee ?? event.fee
+  const host = locale?.host ?? event.host
+  const hostArea = locale?.hostArea ?? event.hostArea
+  const description = lang === 'ja' ? meta.descriptionJa : meta.descriptionEn
+  const audience = lang === 'ja' ? meta.audienceJa : meta.audienceEn
+  const visitor = lang === 'ja' ? meta.visitorJa : meta.visitorEn
 
   return (
     <article className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
