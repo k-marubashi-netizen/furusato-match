@@ -2,16 +2,26 @@
 
 import { Home, CalendarHeart, MessageCircle, User, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useLanguage } from './language-context'
+import { useLanguage, type AppLanguage } from './language-context'
 import type { Tab } from './types'
 
+const labels: Record<AppLanguage, Record<Tab, string>> = {
+  ja: { search: 'ホーム', events: 'イベント', messages: 'メッセージ', mypage: 'マイページ' },
+  en: { search: 'Home', events: 'Events', messages: 'Messages', mypage: 'My Page' },
+  zh: { search: '首页', events: '活动', messages: '消息', mypage: '我的页面' },
+  es: { search: 'Inicio', events: 'Eventos', messages: 'Mensajes', mypage: 'Mi página' },
+  de: { search: 'Start', events: 'Events', messages: 'Nachrichten', mypage: 'Mein Bereich' },
+  fr: { search: 'Accueil', events: 'Événements', messages: 'Messages', mypage: 'Mon espace' },
+  it: { search: 'Home', events: 'Eventi', messages: 'Messaggi', mypage: 'Il mio profilo' },
+}
+
 export function TabBar({ active, onChange, onCreate }: { active: Tab; onChange: (tab: Tab) => void; onCreate: () => void }) {
-  const { t } = useLanguage()
+  const { lang, t } = useLanguage()
   const items: { key: Tab; label: string; icon: typeof Home }[] = [
-    { key: 'search', label: t('ホーム', 'Home'), icon: Home },
-    { key: 'events', label: t('イベント', 'Events'), icon: CalendarHeart },
-    { key: 'messages', label: t('メッセージ', 'Messages'), icon: MessageCircle },
-    { key: 'mypage', label: t('マイページ', 'My Page'), icon: User },
+    { key: 'search', label: labels[lang].search, icon: Home },
+    { key: 'events', label: labels[lang].events, icon: CalendarHeart },
+    { key: 'messages', label: labels[lang].messages, icon: MessageCircle },
+    { key: 'mypage', label: labels[lang].mypage, icon: User },
   ]
   const left = items.slice(0, 2)
   const right = items.slice(2)
