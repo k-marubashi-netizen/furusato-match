@@ -2,13 +2,15 @@
 
 import Image from 'next/image'
 import { useMemo, useState } from 'react'
-import { ArrowRight, Handshake, Home, MessageCircle, Search, UserPlus } from 'lucide-react'
+import { ArrowRight, Handshake, Heart, Home, MapPin, MessageCircle, Search, UserPlus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { guides, type Guide } from '@/lib/data'
 import { recommendedTravelers, type FollowState, type TravelerProfile } from '@/lib/social-data'
 import { KnowledgeGauge } from './knowledge-gauge'
 import { LanguageBadge, OriginLabel, Rating, ThemeTag } from './badges'
 import { LanguageToggle, useLanguage } from './language-context'
+import { localize } from './locale-utils'
+import { furusatoRecommendations, guideCopy, guideYears, travelerCopy } from './profile-locales'
 
 const themes = ['すべて', '自然', '歴史', '食', '祭り', '暮らし'] as const
 const themeEn: Record<(typeof themes)[number], string> = {
@@ -20,29 +22,6 @@ const themeEn: Record<(typeof themes)[number], string> = {
   暮らし: 'Local life',
 }
 
-const guideEn: Record<string, { name: string; area: string; intro: string }> = {
-  g1: {
-    name: 'Makoto Yamaguchi',
-    area: 'Otari, Nagano',
-    intro: 'Born and raised in this valley. I can show you satoyama life, mountain traditions, and the small details visitors usually miss.',
-  },
-  g2: {
-    name: 'Sayaka Tamura',
-    area: 'Noto, Ishikawa',
-    intro: 'I moved here from Tokyo seven years ago. Because I was once a newcomer too, I can help bridge local life and a visitor’s point of view.',
-  },
-  g3: {
-    name: 'Yosuke Nakamura',
-    area: 'Yame, Fukuoka · nearby university student',
-    intro: 'I study in Fukuoka City and regularly visit Yame for fieldwork with tea farmers. Because I come from nearby rather than living here full-time, I can explain the area clearly to first-time visitors.',
-  },
-  g4: {
-    name: 'Hisako Kobayashi',
-    area: 'Miyama, Kyoto',
-    intro: 'I live in the thatched-roof village. I would love to share the seasons, festivals, and everyday wisdom of Miyama.',
-  },
-}
-
 export function SearchScreen({
   onOpenGuide,
   onOpenConversation,
@@ -50,7 +29,7 @@ export function SearchScreen({
   onOpenGuide: (guide: Guide) => void
   onOpenConversation: (conversationId: string) => void
 }) {
-  const { t } = useLanguage()
+  const { lang, t } = useLanguage()
   const [query, setQuery] = useState('')
   const [theme, setTheme] = useState<(typeof themes)[number]>('すべて')
   const [followStates, setFollowStates] = useState<Record<string, FollowState>>(
@@ -61,15 +40,15 @@ export function SearchScreen({
     const q = query.trim().toLowerCase()
     return guides.filter((guide) => {
       const hitTheme = theme === 'すべて' || guide.themes.includes(theme)
-      const en = guideEn[guide.id]
+      const translated = guideCopy[guide.id]
       const haystack = [
         guide.name,
         guide.kana,
         guide.area,
         guide.intro,
-        en?.name ?? '',
-        en?.area ?? '',
-        en?.intro ?? '',
+        translated?.name ?? '',
+        translated ? localize(lang, translated.area) : '',
+        translated ? localize(lang, translated.intro) : '',
         ...guide.languages,
         ...guide.themes,
         ...guide.offers,
@@ -78,7 +57,7 @@ export function SearchScreen({
         .toLowerCase()
       return hitTheme && (!q || haystack.includes(q))
     })
-  }, [query, theme])
+  }, [query, theme, lang])
 
   function toggleFollow(traveler: TravelerProfile) {
     setFollowStates((current) => ({
@@ -92,8 +71,40 @@ export function SearchScreen({
       <HomeHero />
 
       <section className="px-4 pt-5">
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold tracking-[0.14em] text-primary">
+              {localize(lang, { ja: 'おすすめ', en: 'DISCOVER', zh: '推荐', es: 'DESCUBRE', de: 'ENTDECKEN', fr: 'DÉCOUVRIR', it: 'SCOPRI' })}
+            </p>
+            <h2 className="mt-1 font-serif text-xl font-bold text-foreground">
+              {localize(lang, { ja: 'おすすめの“ふるさと”', en: 'Places that could become your furusato', zh: '推荐的“故乡”', es: 'Lugares que podrían ser tu furusato', de: 'Orte, die dein Furusato werden könnten', fr: 'Des lieux qui pourraient devenir votre furusato', it: 'Luoghi che potrebbero diventare il tuo furusato' })}
+            </h2>
+          </div>
+          <Heart className="h-5 w-5 fill-shu text-shu" aria-hidden />
+        </div>
+        <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {furusatoRecommendations.map((item) => (
+            <article key={item.place.ja} className="w-[245px] shrink-0 overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+              <div className="relative h-28 w-full">
+                <Image src={item.image} alt={localize(lang, item.place)} fill className="object-cover" sizes="245px" />
+              </div>
+              <div className="p-3.5">
+                <p className="flex items-center gap-1 text-[11px] font-bold text-primary"><MapPin className="h-3.5 w-3.5" aria-hidden />{localize(lang, item.place)}</p>
+                <p className="mt-1.5 text-[12px] leading-relaxed text-foreground/75">{localize(lang, item.reason)}</p>
+                <div className="mt-2 flex gap-1.5">
+                  {item.tags.map((tag) => <span key={tag.ja} className="rounded-full bg-secondary px-2 py-1 text-[10px] text-secondary-foreground">{localize(lang, tag)}</span>)}
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-4 pt-5">
         <div className="mb-3">
-          <p className="text-[10px] font-bold tracking-[0.16em] text-primary">PEOPLE TO FOLLOW</p>
+          <p className="text-[10px] font-bold tracking-[0.16em] text-primary">
+            {localize(lang, { ja: '旅人とつながる', en: 'PEOPLE TO FOLLOW', zh: '关注旅人', es: 'VIAJEROS A SEGUIR', de: 'REISENDE ENTDECKEN', fr: 'VOYAGEURS À SUIVRE', it: 'VIAGGIATORI DA SEGUIRE' })}
+          </p>
           <h2 className="mt-1 font-serif text-xl font-bold text-foreground">{t('おすすめの旅人', 'Suggested travelers')}</h2>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
             {t('同じ地域に興味を持つ旅人をフォロー。気になったらそのままDMへ。', 'Follow travelers who like the same places, then move straight into a DM.')}
@@ -120,16 +131,14 @@ export function SearchScreen({
             <img src={recommendedTravelers[1].photo} alt="Lucas" className="h-9 w-9 rounded-full border-2 border-background object-cover" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold tracking-[0.12em] text-primary">TRAVELER DM</p>
+            <p className="text-[10px] font-bold tracking-[0.12em] text-primary">
+              {localize(lang, { ja: '旅人どうしのDM', en: 'TRAVELER DM', zh: '旅人私信', es: 'DM ENTRE VIAJEROS', de: 'REISENDEN-DM', fr: 'DM ENTRE VOYAGEURS', it: 'DM TRA VIAGGIATORI' })}
+            </p>
             <h3 className="mt-1 font-serif text-sm font-bold text-foreground">{t('旅人どうしでも、地域の発見を交換。', 'Travelers share local discoveries too.')}</h3>
             <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
               {t('「漁港の夕日が綺麗だった」「神社の裏の小道が静かだった」——知らない旅人同士でも、フォローから会話が始まります。', '“The fishing-port sunset was beautiful.” “There is a quiet path behind the shrine.” Following someone can become a real conversation.')}
             </p>
-            <button
-              type="button"
-              onClick={() => onOpenConversation('tc1')}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground"
-            >
+            <button type="button" onClick={() => onOpenConversation('tc1')} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-xs font-bold text-primary-foreground">
               <MessageCircle className="h-3.5 w-3.5" aria-hidden />
               {t('DMを見てみる', 'Open the DM')}
             </button>
@@ -152,7 +161,7 @@ export function SearchScreen({
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={t('例：長野、English、自然', 'e.g. Nagano, English, nature')}
+              placeholder={localize(lang, { ja: '例：長野、English、自然', en: 'e.g. Nagano, English, nature', zh: '例：长野、English、自然', es: 'p. ej. Nagano, English, naturaleza', de: 'z. B. Nagano, English, Natur', fr: 'ex. Nagano, English, nature', it: 'es. Nagano, English, natura' })}
               className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </div>
@@ -187,17 +196,12 @@ export function SearchScreen({
       </section>
 
       <section className="mx-4 mt-6 rounded-[1.75rem] border border-primary/15 bg-primary/5 p-5">
-        <p className="text-[10px] font-bold tracking-[0.14em] text-primary">OUR GOAL</p>
-        <h2 className="mt-1 font-serif text-[17px] font-bold leading-relaxed text-foreground">
-          {t('観光客を増やすのではなく、“ふるさと”を持つ人を増やす。', 'Not more tourists — more people with a place they can call home.')}
-        </h2>
-        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-          {t('交流が続けば、文化・伝統・自然も次の人へ受け継がれていきます。', 'Long-lasting relationships help pass local culture, traditions, and nature to the next person.')}
+        <p className="text-[10px] font-bold tracking-[0.14em] text-primary">
+          {localize(lang, { ja: '目指すこと', en: 'OUR GOAL', zh: '我们的目标', es: 'NUESTRO OBJETIVO', de: 'UNSER ZIEL', fr: 'NOTRE OBJECTIF', it: 'IL NOSTRO OBIETTIVO' })}
         </p>
-        <button type="button" className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
-          {t('あなたの“ふるさと”をつくろう', 'Find your furusato')}
-          <ArrowRight className="h-4 w-4" aria-hidden />
-        </button>
+        <h2 className="mt-1 font-serif text-[17px] font-bold leading-relaxed text-foreground">{t('観光客を増やすのではなく、“ふるさと”を持つ人を増やす。', 'Not more tourists — more people with a place they can call home.')}</h2>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t('交流が続けば、文化・伝統・自然も次の人へ受け継がれていきます。', 'Long-lasting relationships help pass local culture, traditions, and nature to the next person.')}</p>
+        <button type="button" className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">{t('あなたの“ふるさと”をつくろう', 'Find your furusato')}<ArrowRight className="h-4 w-4" aria-hidden /></button>
       </section>
     </div>
   )
@@ -210,52 +214,25 @@ function HomeHero() {
     <header className="px-4 pt-4">
       <div className="rounded-[2rem] border border-primary/15 bg-card p-5 shadow-sm">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Home className="h-5 w-5" aria-hidden />
-          </span>
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Home className="h-5 w-5" aria-hidden /></span>
           <p className="whitespace-nowrap font-serif text-[18px] font-bold leading-none text-foreground">ふるさとマッチ</p>
           <span className="ml-auto hidden text-[9px] font-bold tracking-[0.14em] text-muted-foreground min-[370px]:block">FURUSATO MATCH</span>
         </div>
-
-        <div className="mt-3 flex justify-end border-t border-border/60 pt-3">
-          <LanguageToggle />
-        </div>
-
+        <div className="mt-3 flex justify-end border-t border-border/60 pt-3"><LanguageToggle /></div>
         <div className="mt-5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-[11px] font-bold text-primary">
-            <Handshake className="h-3.5 w-3.5" aria-hidden />
-            {t('恋愛じゃなく、“交流”のマッチング', 'Matching for connection — not dating')}
-          </span>
-          <h1 className="mt-3 font-serif text-[23px] font-bold leading-[1.45] tracking-[-0.01em] text-foreground">
-            {t('日本に、“ただいま”と言える場所を。', 'Find a place in Japan you can call home.')}
-          </h1>
-          <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
-            {t('外国人観光客、昔からの住民、移住者、そして地域の近くに暮らす大学生や社会人まで。地域を知る人と、知りたい人をつなぎます。', 'Travelers connect with longtime residents, newcomers, and nearby students or workers who know and care about the community.')}
-          </p>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-[11px] font-bold text-primary"><Handshake className="h-3.5 w-3.5" aria-hidden />{t('恋愛じゃなく、“交流”のマッチング', 'Matching for connection — not dating')}</span>
+          <h1 className="mt-3 font-serif text-[23px] font-bold leading-[1.45] tracking-[-0.01em] text-foreground">{t('日本に、“ただいま”と言える場所を。', 'Find a place in Japan you can call home.')}</h1>
+          <p className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">{t('外国人観光客、昔からの住民、移住者、そして地域の近くに暮らす大学生や社会人まで。地域を知る人と、知りたい人をつなぎます。', 'Travelers connect with longtime residents, newcomers, and nearby students or workers who know and care about the community.')}</p>
         </div>
       </div>
     </header>
   )
 }
 
-function TravelerCard({
-  traveler,
-  state,
-  onFollow,
-  onMessage,
-}: {
-  traveler: TravelerProfile
-  state: FollowState
-  onFollow: () => void
-  onMessage: () => void
-}) {
+function TravelerCard({ traveler, state, onFollow, onMessage }: { traveler: TravelerProfile; state: FollowState; onFollow: () => void; onMessage: () => void }) {
   const { lang, t } = useLanguage()
-  const followLabel =
-    state === 'following'
-      ? t('フォロー中', 'Following')
-      : state === 'follows-you'
-        ? t('フォローバック', 'Follow back')
-        : t('フォローする', 'Follow')
+  const translated = travelerCopy[traveler.id]
+  const followLabel = state === 'following' ? t('フォロー中', 'Following') : state === 'follows-you' ? t('フォローバック', 'Follow back') : t('フォローする', 'Follow')
 
   return (
     <article className="w-[230px] shrink-0 rounded-3xl border border-border bg-card p-4 shadow-sm">
@@ -263,43 +240,15 @@ function TravelerCard({
         <img src={traveler.photo} alt={traveler.name} className="h-14 w-14 shrink-0 rounded-full object-cover ring-2 ring-primary/10" />
         <div className="min-w-0 flex-1">
           <p className="truncate font-serif text-sm font-bold text-foreground">{traveler.name}</p>
-          <p className="truncate text-[11px] text-muted-foreground">
-            {lang === 'ja' ? traveler.countryJa : traveler.countryEn} · {lang === 'ja' ? traveler.statusJa : traveler.statusEn}
-          </p>
-          <p className="mt-1 text-[10px] text-muted-foreground">
-            {traveler.followers} {t('フォロワー', 'followers')} · {traveler.following} {t('フォロー中', 'following')}
-          </p>
+          <p className="truncate text-[11px] text-muted-foreground">{localize(lang, translated.country)} · {localize(lang, translated.status)}</p>
+          <p className="mt-1 text-[10px] text-muted-foreground">{traveler.followers} {t('フォロワー', 'followers')} · {traveler.following} {t('フォロー中', 'following')}</p>
         </div>
       </div>
-
-      <p className="mt-3 line-clamp-3 text-[12px] leading-relaxed text-foreground/75">{lang === 'ja' ? traveler.bioJa : traveler.bioEn}</p>
-
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {(lang === 'ja' ? traveler.interestsJa : traveler.interestsEn).map((interest) => (
-          <span key={interest} className="rounded-full bg-secondary px-2 py-1 text-[10px] text-secondary-foreground">{interest}</span>
-        ))}
-      </div>
-
+      <p className="mt-3 line-clamp-3 text-[12px] leading-relaxed text-foreground/75">{localize(lang, translated.bio)}</p>
+      <div className="mt-3 flex flex-wrap gap-1.5">{translated.interests.map((interest) => <span key={interest.ja} className="rounded-full bg-secondary px-2 py-1 text-[10px] text-secondary-foreground">{localize(lang, interest)}</span>)}</div>
       <div className="mt-4 grid grid-cols-[1fr_auto] gap-2">
-        <button
-          type="button"
-          onClick={onFollow}
-          className={cn(
-            'inline-flex items-center justify-center gap-1 rounded-xl px-3 py-2 text-[11px] font-bold transition-colors',
-            state === 'following' ? 'border border-border bg-background text-foreground' : 'bg-primary text-primary-foreground',
-          )}
-        >
-          <UserPlus className="h-3.5 w-3.5" aria-hidden />
-          {followLabel}
-        </button>
-        <button
-          type="button"
-          onClick={onMessage}
-          aria-label={t('DMを送る', 'Send DM')}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background text-primary"
-        >
-          <MessageCircle className="h-4 w-4" aria-hidden />
-        </button>
+        <button type="button" onClick={onFollow} className={cn('inline-flex items-center justify-center gap-1 rounded-xl px-3 py-2 text-[11px] font-bold transition-colors', state === 'following' ? 'border border-border bg-background text-foreground' : 'bg-primary text-primary-foreground')}><UserPlus className="h-3.5 w-3.5" aria-hidden />{followLabel}</button>
+        <button type="button" onClick={onMessage} aria-label={t('DMを送る', 'Send DM')} className="flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-background text-primary"><MessageCircle className="h-4 w-4" aria-hidden /></button>
       </div>
     </article>
   )
@@ -307,38 +256,25 @@ function TravelerCard({
 
 function GuideCard({ guide, onClick }: { guide: Guide; onClick: () => void }) {
   const { lang, t } = useLanguage()
-  const en = guideEn[guide.id]
-  const name = lang === 'ja' ? guide.name : en?.name ?? guide.name
-  const area = lang === 'ja' ? guide.area : en?.area ?? guide.area
-  const intro = lang === 'ja' ? guide.intro : en?.intro ?? guide.intro
+  const translated = guideCopy[guide.id]
+  const name = lang === 'ja' ? guide.name : translated?.name ?? guide.name
+  const area = translated ? localize(lang, translated.area) : guide.area
+  const intro = translated ? localize(lang, translated.intro) : guide.intro
 
   return (
     <button type="button" onClick={onClick} className="w-full overflow-hidden rounded-3xl border border-border bg-card text-left shadow-sm transition-transform active:scale-[0.99]">
       <div className="flex gap-3 p-3">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl">
-          <Image src={guide.photo || '/placeholder.svg'} alt={`${name} profile`} fill className="object-cover" sizes="96px" />
-        </div>
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl"><Image src={guide.photo || '/placeholder.svg'} alt={`${name} profile`} fill className="object-cover" sizes="96px" /></div>
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <p className="truncate font-serif text-base font-bold text-foreground">{name}</p>
-              <p className="truncate text-xs text-muted-foreground">{area}</p>
-            </div>
-            <OriginLabel origin={guide.origin} />
+            <div className="min-w-0"><p className="truncate font-serif text-base font-bold text-foreground">{name}</p><p className="truncate text-xs text-muted-foreground">{area}</p></div>
+            <OriginLabel origin={guide.origin} years={guideYears[guide.id]} />
           </div>
           <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-foreground/80">{intro}</p>
-          <div className="mt-2 flex items-center justify-between">
-            <KnowledgeGauge level={guide.level} />
-            <Rating value={guide.rating} count={guide.reviewCount} />
-          </div>
+          <div className="mt-2 flex items-center justify-between"><KnowledgeGauge level={guide.level} /><Rating value={guide.rating} count={guide.reviewCount} /></div>
         </div>
       </div>
-      <div className="flex flex-wrap items-center gap-1.5 border-t border-border/60 px-3 py-2.5">
-        {guide.languages.map((l) => <LanguageBadge key={l} label={l} />)}
-        <span className="mx-0.5 h-3 w-px bg-border" aria-hidden />
-        {guide.themes.map((item) => <ThemeTag key={item} label={item} />)}
-        <span className="ml-auto inline-flex items-center gap-1 text-[11px] font-bold text-primary">{t('詳しく見る', 'View profile')}<ArrowRight className="h-3 w-3" aria-hidden /></span>
-      </div>
+      <div className="flex flex-wrap items-center gap-1.5 border-t border-border/60 px-3 py-2.5">{guide.languages.map((l) => <LanguageBadge key={l} label={l} />)}<span className="mx-0.5 h-3 w-px bg-border" aria-hidden />{guide.themes.map((item) => <ThemeTag key={item} label={item} />)}<span className="ml-auto inline-flex items-center gap-1 text-[11px] font-bold text-primary">{t('詳しく見る', 'View profile')}<ArrowRight className="h-3 w-3" aria-hidden /></span></div>
     </button>
   )
 }
