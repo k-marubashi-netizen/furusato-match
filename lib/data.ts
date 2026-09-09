@@ -17,13 +17,23 @@ export type Guide = {
   reviews: { name: string; country: string; rating: number; comment: string }[]
 }
 
+const photo = {
+  guide1: 'https://images.unsplash.com/photo-1597832869467-fa6337689f49?auto=format&fit=crop&w=1200&q=82',
+  guide2: 'https://images.unsplash.com/photo-1661495896130-87b61339ac94?auto=format&fit=crop&w=1200&q=82',
+  guide3: 'https://images.unsplash.com/photo-1680070170746-0576b9fa92ee?auto=format&fit=crop&w=1200&q=82',
+  guide4: 'https://images.unsplash.com/photo-1769882199869-68e130511270?auto=format&fit=crop&w=1200&q=82',
+  event1: 'https://images.unsplash.com/photo-1774301582912-29fbd0a4f1cd?auto=format&fit=crop&w=1400&q=82',
+  event2: 'https://images.unsplash.com/photo-1526112455121-272736767b9e?auto=format&fit=crop&w=1400&q=82',
+  event3: 'https://images.unsplash.com/photo-1644413405683-ffc59956cac1?auto=format&fit=crop&w=1400&q=82',
+} as const
+
 export const guides: Guide[] = [
   {
     id: 'g1',
     name: '山口 誠',
     kana: 'やまぐち まこと',
     area: '長野県・小谷村',
-    photo: '/guides/guide-1.png',
+    photo: photo.guide1,
     intro: 'この谷で生まれ育って60年。里山の暮らしと山の恵み、ぜんぶ案内します。',
     level: 5,
     languages: ['日本語', '翻訳機OK'],
@@ -43,7 +53,7 @@ export const guides: Guide[] = [
     name: '田村 さやか',
     kana: 'たむら さやか',
     area: '石川県・能登町',
-    photo: '/guides/guide-2.png',
+    photo: photo.guide2,
     intro: '東京から移住して7年。よそ者だった私だからこそ伝えられる能登があります。',
     level: 4,
     languages: ['日本語', 'English'],
@@ -62,7 +72,7 @@ export const guides: Guide[] = [
     name: '中村 陽介',
     kana: 'なかむら ようすけ',
     area: '福岡県・八女市（近隣大学生）',
-    photo: '/guides/guide-3.png',
+    photo: photo.guide3,
     intro: '福岡市の大学に通いながら、八女の茶農家でフィールドワーク中。地域の外から通う立場だからこそ、初めての人にも分かりやすく案内します。',
     level: 3,
     languages: ['日本語', 'English', '翻訳機OK'],
@@ -81,7 +91,7 @@ export const guides: Guide[] = [
     name: '小林 久子',
     kana: 'こばやし ひさこ',
     area: '京都府・美山町',
-    photo: '/guides/guide-4.png',
+    photo: photo.guide4,
     intro: 'かやぶきの里で暮らしています。日本の四季と祭り、暮らしの知恵を分かち合いたい。',
     level: 5,
     languages: ['日本語', '翻訳機OK'],
@@ -113,7 +123,7 @@ export const events: EventItem[] = [
   {
     id: 'e1',
     title: '小谷・里山の知恵交換会',
-    image: '/events/event-1.png',
+    image: photo.event1,
     date: '9月20日(土) 15:00〜17:00',
     place: '長野県・小谷村公民館',
     capacity: '定員 20名',
@@ -124,7 +134,7 @@ export const events: EventItem[] = [
   {
     id: 'e2',
     title: '能登・朝市と食文化の持ち寄り会',
-    image: '/events/event-2.png',
+    image: photo.event2,
     date: '9月21日(日) 10:00〜12:00',
     place: '石川県・能登町交流センター',
     capacity: '定員 24名',
@@ -135,7 +145,7 @@ export const events: EventItem[] = [
   {
     id: 'e3',
     title: '美山・暮らしとマナーの語り合い',
-    image: '/events/event-3.png',
+    image: photo.event3,
     date: '9月27日(土) 18:00〜19:30',
     place: '京都府・美山町地域交流館',
     capacity: '定員 30名',
@@ -171,7 +181,7 @@ export const conversations: Conversation[] = [
     guideId: 'g1',
     name: '山口 誠',
     area: '長野県・小谷村',
-    photo: '/guides/guide-1.png',
+    photo: photo.guide1,
     preview: 'Looking forward to walking with you!',
     unread: 2,
     time: '10:24',
@@ -187,7 +197,7 @@ export const conversations: Conversation[] = [
     guideId: 'g2',
     name: '田村 さやか',
     area: '石川県・能登町',
-    photo: '/guides/guide-2.png',
+    photo: photo.guide2,
     preview: '朝市は7時からですよ〜',
     unread: 0,
     time: '昨日',
@@ -201,7 +211,7 @@ export const conversations: Conversation[] = [
     guideId: 'g4',
     name: '小林 久子',
     area: '京都府・美山町',
-    photo: '/guides/guide-4.png',
+    photo: photo.guide4,
     preview: 'またいつでも帰ってきてね。',
     unread: 0,
     time: '3日前',
