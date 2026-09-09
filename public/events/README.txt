@@ -1,0 +1,1 @@
+Event artwork is generated for this mock and served locally from this folder.
