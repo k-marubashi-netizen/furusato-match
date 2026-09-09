@@ -35,7 +35,7 @@ const journeys: FurusatoJourney[] = [
   {
     id: 'otari',
     place: { ja: '長野県・小谷村', en: 'Otari, Nagano', zh: '长野县・小谷村', es: 'Otari, Nagano', de: 'Otari, Nagano', fr: 'Otari, Nagano', it: 'Otari, Nagano' },
-    image: '/events/event-1.jpg',
+    image: '/events/event-1.svg',
     step: 2,
     completed: false,
     next: { ja: '次は、地域の人と一緒に案内してみよう', en: 'Next: try guiding together with someone local', zh: '下一步：和当地人一起带路', es: 'Siguiente: prueba a guiar con alguien local', de: 'Als Nächstes: gemeinsam mit jemandem vor Ort führen', fr: 'Ensuite : essayez de guider avec une personne du lieu', it: 'Prossimo passo: prova a guidare con una persona del posto' },
@@ -44,7 +44,7 @@ const journeys: FurusatoJourney[] = [
   {
     id: 'miyama',
     place: { ja: '京都府・美山町', en: 'Miyama, Kyoto', zh: '京都府・美山町', es: 'Miyama, Kioto', de: 'Miyama, Kyoto', fr: 'Miyama, Kyoto', it: 'Miyama, Kyoto' },
-    image: '/events/event-3.jpg',
+    image: '/events/event-3.svg',
     step: 4,
     completed: true,
     next: { ja: 'この地域では、もう迎える側として活動できます', en: 'You can now welcome others here as a guide', zh: '你现在可以在这里作为向导迎接他人', es: 'Ya puedes recibir a otras personas aquí como guía', de: 'Hier kannst du nun selbst andere als Guide willkommen heißen', fr: 'Vous pouvez maintenant accueillir les autres ici en tant que guide', it: 'Ora puoi accogliere altre persone qui come guida' },
@@ -53,7 +53,7 @@ const journeys: FurusatoJourney[] = [
   {
     id: 'noto',
     place: { ja: '石川県・能登町', en: 'Noto, Ishikawa', zh: '石川县・能登町', es: 'Noto, Ishikawa', de: 'Noto, Ishikawa', fr: 'Noto, Ishikawa', it: 'Noto, Ishikawa' },
-    image: '/events/event-2.jpg',
+    image: '/events/event-2.svg',
     step: 1,
     completed: false,
     next: { ja: 'まずは、地域の人に会って暮らしを教わろう', en: 'Start by meeting people and learning how the community lives', zh: '先去认识当地人，了解这里的生活', es: 'Empieza conociendo a la gente y aprendiendo cómo se vive aquí', de: 'Beginne damit, Menschen kennenzulernen und ihren Alltag zu entdecken', fr: 'Commencez par rencontrer des habitants et découvrir leur quotidien', it: 'Inizia incontrando le persone e scoprendo come si vive qui' },
@@ -73,7 +73,7 @@ export function MyPageScreen() {
       <section className="px-4 pt-3">
         <div className="rounded-3xl border border-border bg-card p-4 shadow-sm">
           <div className="flex items-center gap-4">
-            <img src="https://i.pravatar.cc/300?img=44" alt="Emma Wilson" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/10" />
+            <img src="/people/emma.svg" alt="Emma Wilson" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/10" />
             <div className="min-w-0 flex-1">
               <p className="font-serif text-lg font-bold text-foreground">Emma Wilson</p>
               <p className="text-xs text-muted-foreground">{localize(lang, { ja: 'イギリスから日本を旅しています', en: 'Traveling Japan from the United Kingdom', zh: '来自英国，正在日本旅行', es: 'Viajando por Japón desde el Reino Unido', de: 'Aus dem Vereinigten Königreich auf Reise durch Japan', fr: 'Voyage au Japon depuis le Royaume-Uni', it: 'In viaggio in Giappone dal Regno Unito' })}</p>
