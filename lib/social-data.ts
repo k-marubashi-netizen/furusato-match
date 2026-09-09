@@ -20,7 +20,7 @@ export type TravelerProfile = {
   followState: FollowState
 }
 
-// Demo-only profile images from a public avatar service.
+// Demo-only illustrated profiles generated for the Furusato Match mock.
 export const recommendedTravelers: TravelerProfile[] = [
   {
     id: 't1',
@@ -32,7 +32,7 @@ export const recommendedTravelers: TravelerProfile[] = [
     statusEn: 'Traveling in Noto',
     bioJa: '観光地より、地元の市場や海辺の暮らしが好き。次は朝市を歩きたい。',
     bioEn: 'I love local markets and seaside life more than famous sights. Next: the morning market.',
-    photo: 'https://i.pravatar.cc/300?img=47',
+    photo: '/people/sofia.svg',
     interestsJa: ['食', '海', '暮らし'],
     interestsEn: ['Food', 'Sea', 'Local life'],
     followers: 348,
@@ -49,7 +49,7 @@ export const recommendedTravelers: TravelerProfile[] = [
     statusEn: 'Second trip to Otari',
     bioJa: '山と小さな集落が好き。前回教わった場所を、今度は旅仲間にも共有したい。',
     bioEn: 'I love mountains and small villages. I want to share the places locals showed me last time.',
-    photo: 'https://i.pravatar.cc/300?img=12',
+    photo: '/people/lucas.svg',
     interestsJa: ['自然', '写真', '里山'],
     interestsEn: ['Nature', 'Photography', 'Satoyama'],
     followers: 521,
@@ -66,7 +66,7 @@ export const recommendedTravelers: TravelerProfile[] = [
     statusEn: 'Learning about Yame tea culture',
     bioJa: 'お茶と工芸が好き。地元の人に教わったことを旅の記録にしています。',
     bioEn: 'Tea and crafts are my thing. I keep notes on what local people teach me during my trips.',
-    photo: 'https://i.pravatar.cc/300?img=5',
+    photo: '/people/mei.svg',
     interestsJa: ['お茶', '工芸', '文化'],
     interestsEn: ['Tea', 'Crafts', 'Culture'],
     followers: 287,
@@ -81,7 +81,7 @@ export const travelerConversations: Conversation[] = [
     guideId: 'traveler-t1',
     name: 'Sofia Martinez',
     area: 'スペイン・能登を旅行中',
-    photo: 'https://i.pravatar.cc/300?img=47',
+    photo: '/people/sofia.svg',
     preview: 'The sunset near the old fishing port was beautiful.',
     unread: 1,
     time: '11:08',
@@ -114,7 +114,7 @@ export const travelerConversations: Conversation[] = [
     guideId: 'traveler-t2',
     name: 'Lucas Bernard',
     area: 'フランス・小谷村へ再訪',
-    photo: 'https://i.pravatar.cc/300?img=12',
+    photo: '/people/lucas.svg',
     preview: 'I found the rice terrace trail again — still beautiful.',
     unread: 0,
     time: '昨日',
@@ -140,7 +140,7 @@ export const travelerConversations: Conversation[] = [
     guideId: 'traveler-t3',
     name: 'Mei Lin',
     area: '台湾・八女を旅行中',
-    photo: 'https://i.pravatar.cc/300?img=5',
+    photo: '/people/mei.svg',
     preview: 'The tea fields are amazing early in the morning!',
     unread: 0,
     time: '2日前',
