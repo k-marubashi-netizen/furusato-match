@@ -20,7 +20,7 @@ import { recommendedTravelers } from '@/lib/social-data'
 import { KnowledgeGauge } from './knowledge-gauge'
 import { LanguageBadge, OriginLabel, Rating, ThemeTag } from './badges'
 import { LanguageToggle, useLanguage } from './language-context'
-import { MapScreen } from './map-screen'
+import { FurusatoLogo } from './logo'
 
 const themes = ['すべて', '自然', '歴史', '食', '祭り', '暮らし'] as const
 const themeEn: Record<(typeof themes)[number], string> = {
@@ -54,14 +54,15 @@ const regions = [
 export function SearchScreen({
   onOpenGuide,
   onOpenConversation,
+  onOpenMap,
 }: {
   onOpenGuide: (guide: Guide) => void
   onOpenConversation: (conversationId: string) => void
+  onOpenMap: () => void
 }) {
   const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [theme, setTheme] = useState<(typeof themes)[number]>('すべて')
-  const [mapOpen, setMapOpen] = useState(false)
 
   const filteredGuides = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -74,15 +75,13 @@ export function SearchScreen({
     })
   }, [query, theme])
 
-  if (mapOpen) return <MapScreen onBack={() => setMapOpen(false)} onOpenGuide={onOpenGuide} />
-
   return (
     <div className="flex flex-col pb-7">
       <Hero query={query} setQuery={setQuery} />
 
       <section className="px-4 pt-5">
         <div className="grid grid-cols-3 gap-2.5">
-          <QuickAction icon={Map} title={t('地域から', 'By place')} desc={t('日本の地域を見る', 'Browse regions')} onClick={() => setMapOpen(true)} />
+          <QuickAction icon={Map} title={t('地域から', 'By place')} desc={t('日本の地域を見る', 'Browse regions')} onClick={onOpenMap} />
           <QuickAction icon={Sparkles} title={t('体験から', 'By experience')} desc={t('暮らしに混ざる', 'Join local life')} />
           <QuickAction icon={Users} title={t('人から', 'By people')} desc={t('会いたい人を探す', 'Meet someone')} />
         </div>
@@ -211,7 +210,7 @@ function Hero({ query, setQuery }: { query: string; setQuery: (value: string) =>
         <Image src={heroImage} alt="日本の里山" fill priority className="object-cover" sizes="420px" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/70" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 pt-4">
-          <span className="rounded-full bg-white/92 px-3.5 py-2 font-serif text-sm font-bold text-primary shadow-sm backdrop-blur">ふるさとマッチ</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/92 px-3 py-2 font-serif text-sm font-bold text-primary shadow-sm backdrop-blur"><FurusatoLogo className="h-[18px] w-[18px]" />ふるさとマッチ</span>
           <div className="rounded-full bg-white/92 px-2 py-1 shadow-sm backdrop-blur"><LanguageToggle /></div>
         </div>
         <div className="absolute inset-x-0 bottom-0 p-5 pb-7">

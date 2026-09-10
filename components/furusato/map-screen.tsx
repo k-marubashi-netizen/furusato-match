@@ -11,7 +11,7 @@ import { OriginLabel } from './badges'
 
 type PrefContent = { guides: Guide[]; events: number }
 
-export function MapScreen({ onBack, onOpenGuide }: { onBack: () => void; onOpenGuide: (g: Guide) => void }) {
+export function MapScreen({ onBack, onOpenGuide }: { onBack?: () => void; onOpenGuide: (g: Guide) => void }) {
   const { t } = useLanguage()
 
   const content = useMemo(() => {
@@ -39,9 +39,11 @@ export function MapScreen({ onBack, onOpenGuide }: { onBack: () => void; onOpenG
   return (
     <div className="flex flex-col pb-8">
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-border bg-background/95 px-4 py-3 backdrop-blur">
-        <button type="button" onClick={onBack} aria-label={t('もどる', 'Back')} className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-primary shadow-sm">
-          <ArrowLeft className="h-4 w-4" />
-        </button>
+        {onBack && (
+          <button type="button" onClick={onBack} aria-label={t('もどる', 'Back')} className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-primary shadow-sm">
+            <ArrowLeft className="h-4 w-4" />
+          </button>
+        )}
         <div>
           <p className="text-[10px] font-bold tracking-[0.16em] text-primary">EXPLORE BY MAP</p>
           <h1 className="font-serif text-lg font-bold text-foreground">{t('地域から“ふるさと”を探す', 'Find a furusato by place')}</h1>

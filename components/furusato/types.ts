@@ -1,1 +1,1 @@
-export type Tab = 'search' | 'events' | 'messages' | 'mypage'
+export type Tab = 'search' | 'map' | 'events' | 'messages' | 'mypage'

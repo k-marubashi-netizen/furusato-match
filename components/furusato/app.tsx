@@ -12,6 +12,7 @@ import { EventsScreen } from './events-screen'
 import { MessagesScreen } from './messages-screen'
 import { MyPageScreen } from './mypage-screen'
 import { GuideDetail } from './guide-detail'
+import { MapScreen } from './map-screen'
 import type { Tab } from './types'
 
 export function FurusatoApp() {
@@ -50,7 +51,8 @@ function FurusatoAppInner() {
           <GuideDetail guide={activeGuide} onBack={() => setActiveGuide(null)} onMessage={goToMessages} />
         ) : (
           <>
-            {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} onOpenConversation={openConversation} />}
+            {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} onOpenConversation={openConversation} onOpenMap={() => setTab('map')} />}
+            {tab === 'map' && <MapScreen onOpenGuide={setActiveGuide} />}
             {tab === 'events' && <EventsScreen />}
             {tab === 'messages' && <MessagesScreen initialConversationId={openConversationId} onConsumeInitial={() => setOpenConversationId(null)} />}
             {tab === 'mypage' && <MyPageScreen />}
