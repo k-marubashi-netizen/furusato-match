@@ -1,12 +1,12 @@
 'use client'
 
-import { Home, Map, CalendarHeart, MessageCircle, User, Plus } from 'lucide-react'
+import { Home, Map, CalendarHeart, MessageCircle, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useLanguage } from './language-context'
 import { localize } from './locale-utils'
 import type { Tab } from './types'
 
-export function TabBar({ active, onChange, onCreate }: { active: Tab; onChange: (tab: Tab) => void; onCreate: () => void }) {
+export function TabBar({ active, onChange }: { active: Tab; onChange: (tab: Tab) => void }) {
   const { lang } = useLanguage()
   const items: { key: Tab; label: string; icon: typeof Home }[] = [
     { key: 'search', label: localize(lang, { ja: 'ホーム', en: 'Home', zh: '首页', es: 'Inicio', de: 'Start', fr: 'Accueil', it: 'Home' }), icon: Home },
@@ -18,14 +18,6 @@ export function TabBar({ active, onChange, onCreate }: { active: Tab; onChange: 
 
   return (
     <nav className="pointer-events-auto absolute inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 shadow-[0_-6px_24px_rgba(0,0,0,0.04)] backdrop-blur">
-      <button
-        type="button"
-        onClick={onCreate}
-        aria-label={localize(lang, { ja: '投稿する', en: 'Create', zh: '发布', es: 'Crear', de: 'Erstellen', fr: 'Créer', it: 'Crea' })}
-        className="absolute -top-7 right-4 z-10 flex h-14 w-14 items-center justify-center rounded-full bg-shu text-shu-foreground shadow-lg shadow-shu/30 ring-4 ring-card transition-transform active:scale-95"
-      >
-        <Plus className="h-7 w-7" aria-hidden />
-      </button>
       <div className="mx-auto grid max-w-md grid-cols-5 items-end px-1.5 pb-[env(safe-area-inset-bottom)] pt-2">
         {items.map((item) => <TabButton key={item.key} item={item} active={active === item.key} onClick={() => onChange(item.key)} />)}
       </div>

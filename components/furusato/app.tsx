@@ -51,7 +51,7 @@ function FurusatoAppInner() {
           <GuideDetail guide={activeGuide} onBack={() => setActiveGuide(null)} onMessage={goToMessages} />
         ) : (
           <>
-            {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} onOpenConversation={openConversation} onOpenMap={() => setTab('map')} />}
+            {tab === 'search' && <SearchScreen onOpenGuide={setActiveGuide} onOpenConversation={openConversation} onOpenMap={() => setTab('map')} onCreate={() => setCreateOpen(true)} />}
             {tab === 'map' && <MapScreen onOpenGuide={setActiveGuide} />}
             {tab === 'events' && <EventsScreen />}
             {tab === 'messages' && <MessagesScreen initialConversationId={openConversationId} onConsumeInitial={() => setOpenConversationId(null)} />}
@@ -67,7 +67,6 @@ function FurusatoAppInner() {
             setOpenConversationId(null)
             setTab(t)
           }}
-          onCreate={() => setCreateOpen(true)}
         />
       )}
 

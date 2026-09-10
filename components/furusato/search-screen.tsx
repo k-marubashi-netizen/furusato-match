@@ -10,6 +10,7 @@ import {
   Map,
   MapPin,
   MessageCircle,
+  Plus,
   Search,
   Sparkles,
   Users,
@@ -55,10 +56,12 @@ export function SearchScreen({
   onOpenGuide,
   onOpenConversation,
   onOpenMap,
+  onCreate,
 }: {
   onOpenGuide: (guide: Guide) => void
   onOpenConversation: (conversationId: string) => void
   onOpenMap: () => void
+  onCreate: () => void
 }) {
   const { t } = useLanguage()
   const [query, setQuery] = useState('')
@@ -77,7 +80,7 @@ export function SearchScreen({
 
   return (
     <div className="flex flex-col pb-7">
-      <Hero query={query} setQuery={setQuery} />
+      <Hero query={query} setQuery={setQuery} onCreate={onCreate} />
 
       <section className="px-4 pt-5">
         <div className="grid grid-cols-3 gap-2.5">
@@ -202,7 +205,7 @@ export function SearchScreen({
   )
 }
 
-function Hero({ query, setQuery }: { query: string; setQuery: (value: string) => void }) {
+function Hero({ query, setQuery, onCreate }: { query: string; setQuery: (value: string) => void; onCreate: () => void }) {
   const { t } = useLanguage()
   return (
     <header className="relative overflow-hidden rounded-b-[2.4rem] bg-primary text-white shadow-[0_18px_48px_rgba(47,111,106,0.16)]">
@@ -211,7 +214,10 @@ function Hero({ query, setQuery }: { query: string; setQuery: (value: string) =>
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/70" />
         <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 pt-4">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/92 px-3 py-2 font-serif text-sm font-bold text-primary shadow-sm backdrop-blur"><FurusatoLogo className="h-[18px] w-[18px]" />ふるさとマッチ</span>
-          <div className="rounded-full bg-white/92 px-2 py-1 shadow-sm backdrop-blur"><LanguageToggle /></div>
+          <div className="flex items-center gap-2">
+            <button type="button" onClick={onCreate} aria-label={t('投稿する', 'Create')} className="flex h-9 w-9 items-center justify-center rounded-full bg-shu text-shu-foreground shadow-sm transition-transform active:scale-95"><Plus className="h-5 w-5" aria-hidden /></button>
+            <div className="rounded-full bg-white/92 px-2 py-1 shadow-sm backdrop-blur"><LanguageToggle /></div>
+          </div>
         </div>
         <div className="absolute inset-x-0 bottom-0 p-5 pb-7">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold backdrop-blur"><Sparkles className="h-3.5 w-3.5" />{t('人と地域が出会う、交流のマッチング', 'Matching people with places')}</span>
