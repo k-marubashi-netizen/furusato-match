@@ -20,6 +20,7 @@ import { recommendedTravelers } from '@/lib/social-data'
 import { KnowledgeGauge } from './knowledge-gauge'
 import { LanguageBadge, OriginLabel, Rating, ThemeTag } from './badges'
 import { LanguageToggle, useLanguage } from './language-context'
+import { MapScreen } from './map-screen'
 
 const themes = ['すべて', '自然', '歴史', '食', '祭り', '暮らし'] as const
 const themeEn: Record<(typeof themes)[number], string> = {
@@ -60,6 +61,7 @@ export function SearchScreen({
   const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [theme, setTheme] = useState<(typeof themes)[number]>('すべて')
+  const [mapOpen, setMapOpen] = useState(false)
 
   const filteredGuides = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -72,13 +74,15 @@ export function SearchScreen({
     })
   }, [query, theme])
 
+  if (mapOpen) return <MapScreen onBack={() => setMapOpen(false)} onOpenGuide={onOpenGuide} />
+
   return (
     <div className="flex flex-col pb-7">
       <Hero query={query} setQuery={setQuery} />
 
       <section className="px-4 pt-5">
         <div className="grid grid-cols-3 gap-2.5">
-          <QuickAction icon={Map} title={t('地域から', 'By place')} desc={t('日本の地域を見る', 'Browse regions')} />
+          <QuickAction icon={Map} title={t('地域から', 'By place')} desc={t('日本の地域を見る', 'Browse regions')} onClick={() => setMapOpen(true)} />
           <QuickAction icon={Sparkles} title={t('体験から', 'By experience')} desc={t('暮らしに混ざる', 'Join local life')} />
           <QuickAction icon={Users} title={t('人から', 'By people')} desc={t('会いたい人を探す', 'Meet someone')} />
         </div>
@@ -231,9 +235,9 @@ function Hero({ query, setQuery }: { query: string; setQuery: (value: string) =>
   )
 }
 
-function QuickAction({ icon: Icon, title, desc }: { icon: typeof Map; title: string; desc: string }) {
+function QuickAction({ icon: Icon, title, desc, onClick }: { icon: typeof Map; title: string; desc: string; onClick?: () => void }) {
   return (
-    <button type="button" className="rounded-[1.35rem] border border-border bg-card p-3 text-left shadow-sm transition-transform active:scale-[0.98]">
+    <button type="button" onClick={onClick} className="rounded-[1.35rem] border border-border bg-card p-3 text-left shadow-sm transition-transform active:scale-[0.98]">
       <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon className="h-4 w-4" /></span>
       <span className="mt-2.5 block font-serif text-[13px] font-bold text-foreground">{title}</span>
       <span className="mt-0.5 block text-[10px] leading-snug text-muted-foreground">{desc}</span>
