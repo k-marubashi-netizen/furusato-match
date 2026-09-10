@@ -24,7 +24,7 @@ type DemoEvent = {
 
 const events: DemoEvent[] = [
   {
-    id: 'e1', image: '/events/event-1.svg',
+    id: 'e1', image: '/events/event-1.png',
     title: { ja: '雪国の暮らしをのぞく、里山さんぽ', en: 'A Satoyama Walk into Snow-Country Life', zh: '走进雪国生活的里山散步', es: 'Paseo satoyama por la vida en la nieve', de: 'Satoyama-Spaziergang durch das Leben im Schneeland', fr: 'Balade satoyama à la découverte de la vie sous la neige', it: 'Passeggiata satoyama nella vita del paese della neve' },
     description: { ja: '田んぼの畦道を歩きながら、雪国の暮らしや山の恵みを地域の人に教わります。', en: 'Walk the rice-field paths while local people share how snowy seasons shape daily life and the landscape.', zh: '沿着田埂散步，由当地人介绍雪国生活与山里的恩惠。', es: 'Camina entre arrozales mientras la gente local comparte cómo la nieve da forma a la vida cotidiana.', de: 'Auf Feldwegen erzählen Einheimische, wie Schnee und Landschaft den Alltag prägen.', fr: 'En marchant entre les rizières, les habitants racontent comment la neige façonne le quotidien.', it: 'Camminando tra le risaie, gli abitanti raccontano come la neve modella la vita quotidiana.' },
     date: { ja: '9月19日(土) 15:00〜17:00', en: 'Sat, Sep 19 · 3:00–5:00 PM', zh: '9月19日（周六）15:00–17:00', es: 'Sáb, 19 sep · 15:00–17:00', de: 'Sa., 19. Sep. · 15:00–17:00', fr: 'Sam. 19 sept. · 15:00–17:00', it: 'Sab 19 set · 15:00–17:00' },
@@ -36,7 +36,7 @@ const events: DemoEvent[] = [
     badge: { ja: '自然体験', en: 'Nature', zh: '自然体验', es: 'Naturaleza', de: 'Natur', fr: 'Nature', it: 'Natura' },
   },
   {
-    id: 'e2', image: '/events/event-2.svg',
+    id: 'e2', image: '/events/event-2.png',
     title: { ja: '朝市で朝ごはん。能登の食卓を知る', en: 'Breakfast at the Morning Market: Everyday Noto', zh: '在早市吃早餐，认识能登的日常餐桌', es: 'Desayuno en el mercado: descubre Noto', de: 'Frühstück auf dem Morgenmarkt: Noto im Alltag', fr: 'Petit-déjeuner au marché : le quotidien de Noto', it: 'Colazione al mercato: la vita quotidiana di Noto' },
     description: { ja: '地元の人と朝市を歩き、旬の魚や発酵食を選んで、小さな朝ごはんを一緒に囲みます。', en: 'Explore the market with locals, choose seasonal food, then sit down for a simple breakfast together.', zh: '和当地人逛早市，挑选时令食材，然后一起吃一顿简单早餐。', es: 'Recorre el mercado con gente local, elige productos de temporada y comparte un desayuno.', de: 'Mit Einheimischen über den Markt gehen, Saisonales auswählen und gemeinsam frühstücken.', fr: 'Parcourez le marché avec des habitants, choisissez des produits de saison puis partagez un petit-déjeuner.', it: 'Visita il mercato con gli abitanti, scegli prodotti di stagione e condividi una colazione.' },
     date: { ja: '9月20日(日) 8:00〜10:00', en: 'Sun, Sep 20 · 8:00–10:00 AM', zh: '9月20日（周日）8:00–10:00', es: 'Dom, 20 sep · 8:00–10:00', de: 'So., 20. Sep. · 8:00–10:00', fr: 'Dim. 20 sept. · 8:00–10:00', it: 'Dom 20 set · 8:00–10:00' },

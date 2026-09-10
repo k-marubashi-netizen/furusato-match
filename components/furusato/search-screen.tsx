@@ -31,17 +31,17 @@ const themeEn: Record<(typeof themes)[number], string> = {
   暮らし: 'Local life',
 }
 
-const heroImage = 'https://images.unsplash.com/photo-1774301582912-29fbd0a4f1cd?auto=format&fit=crop&w=1400&q=82'
+const heroImage = '/events/event-1.png'
 const regionImages = [
-  'https://images.unsplash.com/photo-1774301582912-29fbd0a4f1cd?auto=format&fit=crop&w=1000&q=82',
-  'https://images.unsplash.com/photo-1526112455121-272736767b9e?auto=format&fit=crop&w=1000&q=82',
-  'https://images.unsplash.com/photo-1644413405683-ffc59956cac1?auto=format&fit=crop&w=1000&q=82',
+  '/events/event-1.png',
+  '/events/event-2.png',
+  '/guides/guide-4.png',
 ]
 const guideImages: Record<string, string> = {
-  g1: 'https://images.unsplash.com/photo-1597832869467-fa6337689f49?auto=format&fit=crop&w=1000&q=82',
-  g2: 'https://images.unsplash.com/photo-1661495896130-87b61339ac94?auto=format&fit=crop&w=1000&q=82',
-  g3: 'https://images.unsplash.com/photo-1680070170746-0576b9fa92ee?auto=format&fit=crop&w=1000&q=82',
-  g4: 'https://images.unsplash.com/photo-1769882199869-68e130511270?auto=format&fit=crop&w=1000&q=82',
+  g1: '/guides/guide-1.png',
+  g2: '/guides/guide-2.png',
+  g3: '/guides/guide-3.png',
+  g4: '/guides/guide-4.png',
 }
 
 const regions = [

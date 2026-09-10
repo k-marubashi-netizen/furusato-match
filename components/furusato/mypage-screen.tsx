@@ -35,7 +35,7 @@ const journeys: FurusatoJourney[] = [
   {
     id: 'otari',
     place: { ja: '長野県・小谷村', en: 'Otari, Nagano', zh: '长野县・小谷村', es: 'Otari, Nagano', de: 'Otari, Nagano', fr: 'Otari, Nagano', it: 'Otari, Nagano' },
-    image: '/events/event-1.svg',
+    image: '/events/event-1.png',
     step: 2,
     completed: false,
     next: { ja: '次は、地域の人と一緒に案内してみよう', en: 'Next: try guiding together with someone local', zh: '下一步：和当地人一起带路', es: 'Siguiente: prueba a guiar con alguien local', de: 'Als Nächstes: gemeinsam mit jemandem vor Ort führen', fr: 'Ensuite : essayez de guider avec une personne du lieu', it: 'Prossimo passo: prova a guidare con una persona del posto' },
@@ -53,7 +53,7 @@ const journeys: FurusatoJourney[] = [
   {
     id: 'noto',
     place: { ja: '石川県・能登町', en: 'Noto, Ishikawa', zh: '石川县・能登町', es: 'Noto, Ishikawa', de: 'Noto, Ishikawa', fr: 'Noto, Ishikawa', it: 'Noto, Ishikawa' },
-    image: '/events/event-2.svg',
+    image: '/events/event-2.png',
     step: 1,
     completed: false,
     next: { ja: 'まずは、地域の人に会って暮らしを教わろう', en: 'Start by meeting people and learning how the community lives', zh: '先去认识当地人，了解这里的生活', es: 'Empieza conociendo a la gente y aprendiendo cómo se vive aquí', de: 'Beginne damit, Menschen kennenzulernen und ihren Alltag zu entdecken', fr: 'Commencez par rencontrer des habitants et découvrir leur quotidien', it: 'Inizia incontrando le persone e scoprendo come si vive qui' },

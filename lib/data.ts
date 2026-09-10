@@ -18,13 +18,13 @@ export type Guide = {
 }
 
 const photo = {
-  guide1: 'https://images.unsplash.com/photo-1597832869467-fa6337689f49?auto=format&fit=crop&w=1200&q=82',
-  guide2: 'https://images.unsplash.com/photo-1661495896130-87b61339ac94?auto=format&fit=crop&w=1200&q=82',
-  guide3: 'https://images.unsplash.com/photo-1680070170746-0576b9fa92ee?auto=format&fit=crop&w=1200&q=82',
-  guide4: 'https://images.unsplash.com/photo-1769882199869-68e130511270?auto=format&fit=crop&w=1200&q=82',
-  event1: 'https://images.unsplash.com/photo-1774301582912-29fbd0a4f1cd?auto=format&fit=crop&w=1400&q=82',
-  event2: 'https://images.unsplash.com/photo-1526112455121-272736767b9e?auto=format&fit=crop&w=1400&q=82',
-  event3: 'https://images.unsplash.com/photo-1644413405683-ffc59956cac1?auto=format&fit=crop&w=1400&q=82',
+  guide1: '/guides/guide-1.png',
+  guide2: '/guides/guide-2.png',
+  guide3: '/guides/guide-3.png',
+  guide4: '/guides/guide-4.png',
+  event1: '/events/event-1.png',
+  event2: '/events/event-2.png',
+  event3: '/events/event-3.png',
 } as const
 
 export const guides: Guide[] = [
