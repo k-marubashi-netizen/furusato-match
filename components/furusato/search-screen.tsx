@@ -33,11 +33,11 @@ const themeEn: Record<(typeof themes)[number], string> = {
   暮らし: 'Local life',
 }
 
-const heroImage = '/events/event-1.png'
+const heroImage = '/events/hero-village.png'
 const regionImages = [
   '/events/event-1.png',
   '/events/event-2.png',
-  '/guides/guide-4.png',
+  '/events/event-3.png',
 ]
 const guideImages: Record<string, string> = {
   g1: '/guides/guide-1.png',

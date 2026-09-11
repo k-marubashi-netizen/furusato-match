@@ -44,7 +44,7 @@ const journeys: FurusatoJourney[] = [
   {
     id: 'miyama',
     place: { ja: '京都府・美山町', en: 'Miyama, Kyoto', zh: '京都府・美山町', es: 'Miyama, Kioto', de: 'Miyama, Kyoto', fr: 'Miyama, Kyoto', it: 'Miyama, Kyoto' },
-    image: '/events/event-3.svg',
+    image: '/events/event-3.png',
     step: 4,
     completed: true,
     next: { ja: 'この地域では、もう迎える側として活動できます', en: 'You can now welcome others here as a guide', zh: '你现在可以在这里作为向导迎接他人', es: 'Ya puedes recibir a otras personas aquí como guía', de: 'Hier kannst du nun selbst andere als Guide willkommen heißen', fr: 'Vous pouvez maintenant accueillir les autres ici en tant que guide', it: 'Ora puoi accogliere altre persone qui come guida' },
@@ -73,7 +73,7 @@ export function MyPageScreen() {
       <section className="px-4 pt-3">
         <div className="rounded-3xl border border-border bg-card p-4 shadow-sm">
           <div className="flex items-center gap-4">
-            <img src="/people/emma.svg" alt="Emma Wilson" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/10" />
+            <img src="/people/emma.png" alt="Emma Wilson" className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/10" />
             <div className="min-w-0 flex-1">
               <p className="font-serif text-lg font-bold text-foreground">Emma Wilson</p>
               <p className="text-xs text-muted-foreground">{localize(lang, { ja: 'イギリスから日本を旅しています', en: 'Traveling Japan from the United Kingdom', zh: '来自英国，正在日本旅行', es: 'Viajando por Japón desde el Reino Unido', de: 'Aus dem Vereinigten Königreich auf Reise durch Japan', fr: 'Voyage au Japon depuis le Royaume-Uni', it: 'In viaggio in Giappone dal Regno Unito' })}</p>
