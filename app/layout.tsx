@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'ふるさとマッチ｜誰もがふるさとガイドになれるアプリ',
-  description: '出会いから“ふるさと”が増えていく交流アプリ。居住地や国籍を問わず参加でき、地域を知り、希望する人はふるさとガイドを目指せます。',
+  title: 'ふるさとマッチ｜誰もが“ふるさと”にできるアプリ',
+  description: '出会いから“ふるさと”が増えていく交流アプリ。居住地・国籍・話せる言語を問わず参加でき、地域を知り、希望する人はガイドとして案内できます。',
   icons: { icon: '/icon.svg' },
 }
 export const viewport: Viewport = {

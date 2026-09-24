@@ -52,30 +52,35 @@ function seed(){return{
    theme:['自然','食'],reflection:{},experiences:[]}
  ],
  guides:[
-  {id:'g1',region:'otari',name:'山口 誠',origin:'resident',img:'/guides/guide-1.png',langs:['日本語','翻訳アプリ可'],
-   spec:['里山の歩き方','郷土料理','地域のマナー'],relation:'この谷で生まれ育って60年。'},
+  {id:'g1',region:'otari',name:'山口 誠',origin:'resident',img:'/guides/guide-1.png',langs:['日本語'],
+   spec:['里山の歩き方','郷土料理','地域のマナー'],relation:'この谷で生まれ育って60年。',
+   lang_note:'日本語のみですが、翻訳機の使い方も一緒に練習しながら案内します。どの国の方も大歓迎です。'},
   {id:'g2',region:'noto',name:'田村 さやか',origin:'other',img:'/guides/guide-2.png',langs:['日本語','English'],
-   spec:['朝市めぐり','発酵食','暮らし'],relation:'東京から移住して7年。よそ者だった私だから話せる能登。'},
+   spec:['朝市めぐり','発酵食','暮らし'],relation:'東京から移住して7年。よそ者だった私だから話せる能登。',
+   lang_note:'英語もOK。練習中の方は、ぜひ気軽に英語で話しかけてください。'},
   {id:'g3',region:'miyama',name:'小林 久子',origin:'resident',img:'/guides/guide-4.png',langs:['日本語'],
-   spec:['囲炉裏の暮らし','季節の行事','家庭料理'],relation:'美山で三世代。おかえりと言える家です。'},
-  {id:'g4',region:'miyama',name:'Marie（マリー）',origin:'overseas',img:'/people/emma.png',langs:['Français','English','日本語'],
-   spec:['文化の背景を通訳','写真さんぽ'],relation:'フランス出身。美山に暮らして4年、学んだ文化を母語でも伝えます。'},
+   spec:['囲炉裏の暮らし','季節の行事','家庭料理'],relation:'美山で三世代。おかえりと言える家です。',
+   lang_note:'日本語のみ。翻訳機を使えば言葉が違っても大丈夫。ゆっくりお話しします。'},
+  {id:'g4',region:'miyama',name:'Marie（マリー）',origin:'overseas',img:'/people/emma.png',langs:['日本語','English','Français'],
+   spec:['文化の背景を通訳','写真さんぽ'],relation:'フランス出身。美山に暮らして4年、学んだ文化を母語でも伝えます。',
+   lang_note:'英語・フランス語で、文化の背景まで母語で通訳できます。'},
   {id:'g5',region:'yame',name:'中村 陽介',origin:'other',img:'/guides/guide-3.png',langs:['日本語','English'],
-   spec:['茶畑体験','商店街さんぽ'],relation:'近隣の大学に通いながら八女を学ぶ2年目。'}
+   spec:['茶畑体験','商店街さんぽ'],relation:'近隣の大学に通いながら八女を学ぶ2年目。',
+   lang_note:'英語で気軽に。英語を話したい人の練習相手にもなります。'}
  ],
  board:[
   {id:'b1',region:'otari',type:'event',title:'里山の畦道さんぽと保存食づくり',img:'/events/event-1.png',
    body:'田んぼの畦道を歩き、地域の方に雪国の暮らしと山の恵みを教わります。採れた食材で小さな保存食も。',
    date:'2026-10-03',time:'15:00〜17:00',place:'小谷村公民館 集合',apply:'回覧板から参加希望（デモ）',
-   publisher:'小谷の地域メンバー',fee:'500円',people:['/people/lucas.png','/people/sofia.png']},
+   publisher:'小谷の地域メンバー',fee:'500円',langs:['日本語'],people:['/people/lucas.png','/people/sofia.png']},
   {id:'b2',region:'noto',type:'event',title:'朝市で朝ごはん。能登の食卓を知る',img:'/events/event-2.png',
    body:'地元の人と朝市を歩き、旬の魚や発酵食を選んで、一緒に小さな朝ごはんを囲みます。',
    date:'2026-10-04',time:'8:00〜10:00',place:'能登町 朝市周辺',apply:'回覧板から参加希望（デモ）',
-   publisher:'能登の住民・飲食店メンバー',fee:'1,200円',people:['/people/sofia.png','/people/mei.png']},
+   publisher:'能登の住民・飲食店メンバー',fee:'1,200円',langs:['日本語','English'],people:['/people/sofia.png','/people/mei.png']},
   {id:'b3',region:'miyama',type:'event',title:'美山の夜、囲炉裏で暮らしトーク',img:'/events/event-3.png',
    body:'囲炉裏を囲み、季節の行事やご近所づきあい、暮らしの知恵を気軽に語り合います。',
    date:'2026-10-10',time:'18:00〜19:30',place:'美山町 地域交流館',apply:'回覧板から参加希望（デモ）',
-   publisher:'美山の地域メンバー',fee:'無料',people:['/people/emma.png','/people/lucas.png','/people/mei.png']},
+   publisher:'美山の地域メンバー',fee:'無料',langs:['日本語','English','Français'],people:['/people/emma.png','/people/lucas.png','/people/mei.png']},
   {id:'b4',region:'noto',type:'news',title:'朝市通りの魚屋さん、秋の新物が並びはじめました',
    body:'涼しくなり、朝市に秋の魚が並びはじめました。離れて暮らす皆さんも、次に帰るときの楽しみにどうぞ。',
    publisher:'能登の回覧板メンバー'},
@@ -137,6 +142,13 @@ const statusColor={certified:'var(--gold)',learning:'var(--shu)',new:'var(--surf
 let toastT;
 function toast(m){const t=$('#toast');t.innerHTML=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2100);}
 function avatar(src,alt,cls){return src?`<img class="avatar ${cls||''}" src="${src}" alt="${esc(alt||'')}" loading="lazy">`:`<span class="avatar ph ${cls||''}">${IC.pin}</span>`;}
+/* ---- language helpers ---- */
+const langCls=l=>/日本語/.test(l)?'ja':/English|英語/.test(l)?'en':/Français|フランス/.test(l)?'fr':'ot';
+function langChips(langs,translator){
+ let h=(langs||[]).map(l=>`<span class="lang ${langCls(l)}">${esc(l)}</span>`).join('');
+ if(translator!==false)h+=`<span class="lang tr">${IC.globe} 翻訳機で全言語対応</span>`;
+ return `<span class="langrow">${h}</span>`;
+}
 
 /* ---------- nav / routing ---------- */
 let view='home';
@@ -170,8 +182,8 @@ function homeView(){
    <div style="display:flex;align-items:center;gap:8px">${LOGO}
      <div><div style="font-family:'Zen Maru Gothic';font-weight:700;font-size:15px">ふるさとマッチ</div>
      <div style="font-size:10.5px;color:#e7f5ec">デモ試作品・ブラウザ内で動作します</div></div></div>
-   <h1 style="margin-top:18px">誰もが、<br>ふるさとガイドになれる。</h1>
-   <div class="lead">出会いから、ふるさとが増えていく。<br>住む場所も国籍も問いません。ガイドになるのは、希望する人だけ。</div>
+   <h1 style="margin-top:18px">誰もが、ふるさとにできる。</h1>
+   <div class="lead">出会いから、ふるさとが増えていく。<br>住む場所も国籍も問いません。ガイドとして案内するのは、希望する人だけ。</div>
    <div style="display:flex;gap:8px;margin-top:18px">
      <button class="btn gold sm" data-go="map">マップでふるさとを見る</button>
      <button class="btn ghost sm" data-act="findGuide" style="background:#ffffff1f;color:#fff;border-color:#ffffff88">地域とガイドを探す</button>
@@ -186,6 +198,19 @@ function homeView(){
    </div>
  </div>
 
+ <div class="pad" style="margin-top:14px">
+   <div class="card langcard">
+     <div class="eyebrow" style="color:var(--blue)">${IC.globe} 言語の壁を越える</div>
+     <p style="margin:7px 0 10px;font-size:13.5px">「何語を話せるか」をプロフィールに表示。イベントも“何語で行うか”がわかります。
+     翻訳機で全言語に対応するので、言葉が違っても参加できます。</p>
+     <div class="langfeat">
+       <div><span class="lang ja">日本語のみ</span><p>ガイドが翻訳機の使い方を一緒に練習。どの国の人とも交流できます。</p></div>
+       <div><span class="lang en">${IC.globe} 英語を話したい</span><p>英語対応のガイドや参加者と、積極的に英語で話せます。</p></div>
+       <div><span class="lang tr">${IC.globe} 翻訳機で全言語対応</span><p>対応言語がなくても、翻訳機を介してその場で会話できます。</p></div>
+     </div>
+   </div>
+ </div>
+
  <div class="pad" style="margin-top:20px">
    <div class="eyebrow">つかいかた</div>
    <h2 class="sec-t">出会いから、ふるさとになるまで</h2>
@@ -194,7 +219,7 @@ function homeView(){
        ['1','地域や人を見つける','地域・関心・対応言語から、地域とふるさとガイドを探します。'],
        ['2','マッチングして地域を知る','一緒にまちを歩き、名所だけでなくマナー・文化・暮らし・自然を知ります。'],
        ['3','体験を重ね、ふるさと認定','振り返りで理解を確かめ、地域ごとに“ふるさと認定”を受けられます。'],
-       ['4','認定後の二つの楽しみ方','“ふるさととして楽しむ”か、希望すれば“ガイドを目指す”か。どちらも対等です。']
+       ['4','認定後の二つの過ごし方','ふるさととして楽しむか、希望すればガイドとして案内するか、選べます。']
      ].map(s=>`<div class="step"><div class="n">${s[0]}</div><div><div style="font-weight:700">${s[1]}</div>
        <div class="muted" style="font-size:12.5px">${s[2]}</div></div></div>`).join('')}
    </div>
@@ -365,12 +390,12 @@ function openRegion(id){
  if(r.status==='certified'){
    cert=`<div class="card" style="padding:14px;background:var(--gold-tint);border-color:var(--gold)">
      <div class="pill gold">${IC.starF} ふるさと認定済み</div>
-     <p style="font-size:13px;margin:8px 0 10px">この地域はあなたの“ふるさと”です。認定後の楽しみ方を選べます。</p>
+     <p style="font-size:13px;margin:8px 0 10px">この地域はあなたの“ふるさと”です。認定後の過ごし方を選べます。</p>
      <div class="two">
        <button class="btn sm block" data-act="enjoy" data-region="${id}">ふるさととして楽しむ</button>
-       <button class="btn ghost sm block" data-act="aimGuide" data-region="${id}">ガイドを目指す</button>
+       <button class="btn ghost sm block" data-act="aimGuide" data-region="${id}">ガイドとして案内する</button>
      </div>
-     <p class="muted" style="font-size:11px;margin-top:8px">どちらも対等です。イベント参加は任意。ガイドは希望する人が進む道です。</p>
+     <p class="muted" style="font-size:11px;margin-top:8px">イベント参加は任意です。ガイドとして案内するのは、希望する人だけです。</p>
    </div>`;
  }else if(r.status==='learning'){
    const rf=r.reflection||{};const items=[['culture','文化'],['life','暮らし'],['manner','マナー'],['nature','自然']];
@@ -399,6 +424,12 @@ function openRegion(id){
     <p class="muted" style="font-size:13px;margin:6px 0 0">${esc(r.blurb)}</p>
     <div style="margin-top:6px">${r.theme.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
   </div>
+  ${(()=>{const ls=[...new Set(guidesOf(id).flatMap(g=>g.langs||[]))];return ls.length?`
+  <div class="langbox">
+    <div class="langlabel">${IC.globe} この地域で使える言語</div>
+    ${langChips(ls)}
+    <p class="langnote" style="margin-top:7px">日本語しか話せなくても大丈夫。翻訳機の使い方はガイドが案内します。英語を話したい人は、英語対応のガイドと積極的に話せます。</p>
+  </div>`:''})()}
   <div style="margin-top:14px">${cert}</div>
 
   <h3 style="font-size:15px;margin:18px 0 8px">この地域のふるさとガイド</h3>
@@ -422,8 +453,10 @@ function guideCard(g){
        <span class="pill green" style="font-size:10px">${originLabel[g.origin]}</span></div>
      <p class="muted" style="font-size:12.5px;margin:4px 0 6px">${esc(g.relation)}</p>
      <div>${g.spec.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
-     <div class="muted" style="font-size:11.5px;margin-top:6px">${IC.globe} 対応言語：${g.langs.join('・')}</div>
-     <button class="btn sm" data-act="apply" data-guide="${g.id}" style="margin-top:9px">交流を申し込む <span class="demo">デモ</span></button>
+     <div class="langlabel">話せる言語</div>
+     ${langChips(g.langs)}
+     ${g.lang_note?`<p class="langnote">${esc(g.lang_note)}</p>`:''}
+     <button class="btn sm" data-act="apply" data-guide="${g.id}" style="margin-top:10px">交流を申し込む <span class="demo">デモ</span></button>
    </div>
  </div>`;
 }
@@ -476,6 +509,7 @@ function boardCard(b){
    </div>
    <div style="font-weight:700;margin-top:6px">${esc(b.title)}</div>
    ${b.type==='event'?`<div class="muted metaline">${IC.cal} ${fdate(b.date)} ${b.time||''}　${IC.pin} ${esc(b.place||'')}</div>`:''}
+   ${b.type==='event'&&b.langs?`<div class="langline">${IC.globe}<span>実施言語</span>${langChips(b.langs)}</div>`:''}
    <p style="font-size:13px;margin:6px 0 0">${esc(b.body)}</p>
    ${b.people&&b.people.length?`<div class="attend">${b.people.map(p=>`<img src="${p}" alt="" loading="lazy">`).join('')}<span class="muted" style="font-size:11px;margin-left:6px">ほか 参加予定（デモ）</span></div>`:''}
    <div class="row" style="margin-top:10px;gap:8px">
@@ -497,7 +531,9 @@ function openBoard(id){
      <div class="metaline">${IC.cal} ${fdate(b.date)} ${b.time||''}</div>
      <div class="metaline">${IC.pin} ${esc(b.place||'')}</div>
      ${b.fee?`<div class="metaline">${IC.coin} ${esc(b.fee)}</div>`:''}
-     <div class="metaline">${IC.pen} 申込：${esc(b.apply||'回覧板から参加希望（デモ）')}</div></div>`:''}
+     <div class="metaline">${IC.pen} 申込：${esc(b.apply||'回覧板から参加希望（デモ）')}</div>
+     ${b.langs?`<div class="langline" style="margin-top:4px">${IC.globe}<span>実施言語</span>${langChips(b.langs)}</div>`:''}</div>`:''}
+  ${b.type==='event'?`<p class="langnote" style="margin-top:10px">日本語しか話せない方は翻訳機の使い方をその場でサポート。英語で話したい方は英語対応のメンバーと交流できます。</p>`:''}
   <p style="font-size:14px;margin-top:12px">${esc(b.body)}</p>
   ${b.people&&b.people.length?`<div class="attend" style="margin-top:12px">${b.people.map(p=>`<img src="${p}" alt="" loading="lazy">`).join('')}<span class="muted" style="font-size:11px;margin-left:6px">参加予定のメンバー（デモ）</span></div>`:''}
   <div class="row" style="margin-top:16px">
@@ -609,10 +645,10 @@ function meAvatar(cls){
    :`<span class="meav ph ${cls||''}">${esc((me.name||'あ').slice(0,1))}</span>`;
 }
 function pgridCell(r){
- const dot=r.status==='certified'?'var(--gold)':'var(--shu)';
+ const cert=r.status==='certified';
  const bg=r.photo?`background-image:url('${r.photo}')`:'background:linear-gradient(135deg,var(--green),var(--green-tint))';
- return `<button class="pcell" data-region="${r.id}" style="${bg}">
-   <span class="pcelldot" style="background:${dot}"></span>
+ return `<button class="pcell ${cert?'cert':'prog'}" data-region="${r.id}" style="${bg}">
+   <span class="pcellbadge ${cert?'gold':'prog'}">${cert?IC.starF+' 認定済み':'進行中'}</span>
    <span class="pcellname">${esc(r.name)}</span>
  </button>`;
 }
@@ -647,42 +683,45 @@ function myView(){
    <!-- ===== profile (Instagram/LINE風) ===== -->
    <div class="card profcard">
      <div class="profcover"></div>
-     <div class="profhead">
+     <div class="profmain">
        ${meAvatar('lg')}
-       <div class="profstats">
-         <button class="pstat" data-go="map"><b>${cs.length}</b><span>ふるさと</span></button>
-         <button class="pstat" data-act="myThreads"><b>${S.threads.length}</b><span>交流</span></button>
-         <button class="pstat" data-act="mySaved"><b>${S.saved.length}</b><span>保存</span></button>
+       <div class="profid">
+         <div class="profname">${esc(me.name||'あなた')}</div>
+         <div class="muted profhandle">@${esc(me.handle||'furusato_you')}</div>
        </div>
      </div>
-     <div class="profbody">
-       <div class="profname">${esc(me.name||'あなた')}</div>
-       <div class="muted profhandle">@${esc(me.handle||'furusato_you')}</div>
-       <p class="profbio">${esc(me.bio||'')}</p>
-       <div class="row" style="gap:8px;margin-top:10px">
-         <button class="btn ghost sm" data-act="editProfile">プロフィールを編集</button>
-         <button class="btn ghost sm" data-go="map">ふるさとを増やす</button>
-       </div>
+     <p class="profbio">${esc(me.bio||'')}</p>
+     <div class="profstatbar">
+       <button class="pstat" data-go="map"><b>${cs.length}</b><span>ふるさと</span></button>
+       <button class="pstat" data-act="myThreads"><b>${S.threads.length}</b><span>交流</span></button>
+       <button class="pstat" data-act="mySaved"><b>${S.saved.length}</b><span>保存</span></button>
+     </div>
+     <div class="profbtns">
+       <button class="btn ghost sm block" data-act="editProfile">プロフィールを編集</button>
+       <button class="btn sm block" data-go="map">ふるさとを増やす</button>
      </div>
    </div>
 
    <div class="proftabs"><span class="on">${IC.pin} わたしのふるさと</span></div>
    ${grid.length?`<div class="pgrid">${grid.map(pgridCell).join('')}</div>`
      :'<p class="muted" style="font-size:13px;text-align:center;padding:20px 0">まだふるさとがありません。マップから地域を知るところから始めましょう。</p>'}
-   <p class="muted" style="font-size:11px;margin-top:10px">金色＝ふるさと認定済み／朱＝交流・学習中。タップで地域の詳細が開きます。</p>
+   <div class="pglegend">
+     <span><i class="lg-gold"></i>認定済みのふるさと</span>
+     <span><i class="lg-prog"></i>進行中（交流・学習中）</span>
+   </div>
 
-   <h3 style="font-size:15px;margin:20px 0 8px">認定後の二つの楽しみ方</h3>
+   <h3 style="font-size:15px;margin:20px 0 8px">認定後の二つの過ごし方</h3>
    <div class="two">
      <div class="card" style="padding:13px">
        <div style="font-weight:700;display:flex;align-items:center;gap:6px">${IC.cup} ふるさととして楽しむ</div>
        <p class="muted" style="font-size:12px;margin:5px 0 0">会いたい人に会いに帰る。なじみの店に寄る。景色を眺めてのんびり。行事参加は任意です。</p>
      </div>
      <div class="card" style="padding:13px">
-       <div style="font-weight:700;display:flex;align-items:center;gap:6px">${IC.leaf} ふるさとガイドを目指す</div>
-       <p class="muted" style="font-size:12px;margin:5px 0 0">希望する人が、さらに学び、先輩ガイドに同行・実習を重ね、次の人へ伝える側へ進みます。</p>
+       <div style="font-weight:700;display:flex;align-items:center;gap:6px">${IC.leaf} ガイドとして案内する</div>
+       <p class="muted" style="font-size:12px;margin:5px 0 0">希望する人が、さらに学び、先輩ガイドに同行・実習を重ね、次に来た人へその地域を案内・紹介します。</p>
      </div>
    </div>
-   <p class="muted" style="font-size:11px;margin-top:8px">ふるさと認定と、ガイドとして活動できる状態は別に管理します。ガイドは全員の目標ではありません。</p>
+   <p class="muted" style="font-size:11px;margin-top:8px">ふるさと認定と、ガイドとして案内できる状態は別に管理します。ガイドとして案内するのは希望する人だけです。</p>
 
    <h3 style="font-size:15px;margin:20px 0 8px">地域で始める・ガイドを育てる</h3>
    <div class="card" style="padding:14px">
@@ -738,7 +777,7 @@ $('#app').addEventListener('click',e=>{
    if(a==='apply'){applyGuide(act.dataset.guide);return;}
    if(a==='certify'){certify(rid);return;}
    if(a==='enjoy'){S.goalGuide[rid]=false;save();toast('「ふるさととして楽しむ」を選びました');closeSheet();return;}
-   if(a==='aimGuide'){S.goalGuide[rid]=true;save();toast('「ガイドを目指す」を選びました（希望制）');closeSheet();return;}
+   if(a==='aimGuide'){S.goalGuide[rid]=true;save();toast('「ガイドとして案内する」を選びました（希望制）');closeSheet();return;}
    if(a==='postForm'){postForm();return;}
    if(a==='preview'){doPreview();return;}
    if(a==='reset'){resetAll();return;}
