@@ -26,22 +26,22 @@ const LOGOG=`<span style="color:var(--green)" class="logo">${IC.logo}</span>`;
 function seed(){return{
  version:7,
  regions:[
-  {id:'otari',name:'小谷村',pref:'長野県',prefId:'nagano',status:'certified',photo:'/events/event-1.jpg',
+  {id:'otari',name:'小谷村',pref:'長野県',prefId:'nagano',status:'certified',photo:'/events/event-1.png',
    blurb:'雪国の里山。田んぼの畦道と山の恵み、湯けむりの暮らし。',
    theme:['自然','暮らし','祭り'],
    reflection:{culture:true,life:true,manner:true,nature:true},
    experiences:['山口さんと畦道さんぽ','郷土料理づくりを教わった','雪囲いの意味を聞いた']},
-  {id:'noto',name:'能登町',pref:'石川県',prefId:'ishikawa',status:'learning',photo:'/events/event-2.jpg',
+  {id:'noto',name:'能登町',pref:'石川県',prefId:'ishikawa',status:'learning',photo:'/events/event-2.png',
    blurb:'海と発酵食の町。朝市の賑わいと、移住者が見つけた能登。',
    theme:['食','自然','暮らし'],
    reflection:{culture:true,life:true,manner:false,nature:false},
    experiences:['朝市を一緒に歩いた']},
-  {id:'miyama',name:'南丹市美山町',pref:'京都府',prefId:'kyoto',status:'learning',photo:'/events/event-3.jpg',
+  {id:'miyama',name:'南丹市美山町',pref:'京都府',prefId:'kyoto',status:'learning',photo:'/events/event-3.png',
    blurb:'かやぶきの里。囲炉裏を囲む夜、暮らしと文化の語らい。',
    theme:['文化','暮らし','自然'],
    reflection:{culture:true,life:false,manner:true,nature:false},
    experiences:['囲炉裏で暮らしトーク']},
-  {id:'yame',name:'八女市',pref:'福岡県',prefId:'fukuoka',status:'new',photo:'/events/event-5.jpg',
+  {id:'yame',name:'八女市',pref:'福岡県',prefId:'fukuoka',status:'new',photo:'/events/event-5.png',
    blurb:'八女茶の里。茶畑と、近隣から通う学生ガイドの案内。',
    theme:['食','自然','文化'],reflection:{},experiences:[]},
   {id:'higashikawa',name:'東川町',pref:'北海道',prefId:'hokkaido',status:'new',photo:'',
@@ -64,15 +64,15 @@ function seed(){return{
    spec:['茶畑体験','商店街さんぽ'],relation:'近隣の大学に通いながら八女を学ぶ2年目。'}
  ],
  board:[
-  {id:'b1',region:'otari',type:'event',title:'里山の畦道さんぽと保存食づくり',img:'/events/event-1.jpg',
+  {id:'b1',region:'otari',type:'event',title:'里山の畦道さんぽと保存食づくり',img:'/events/event-1.png',
    body:'田んぼの畦道を歩き、地域の方に雪国の暮らしと山の恵みを教わります。採れた食材で小さな保存食も。',
    date:'2026-10-03',time:'15:00〜17:00',place:'小谷村公民館 集合',apply:'回覧板から参加希望（デモ）',
    publisher:'小谷の地域メンバー',fee:'500円',people:['/people/lucas.png','/people/sofia.png']},
-  {id:'b2',region:'noto',type:'event',title:'朝市で朝ごはん。能登の食卓を知る',img:'/events/event-2.jpg',
+  {id:'b2',region:'noto',type:'event',title:'朝市で朝ごはん。能登の食卓を知る',img:'/events/event-2.png',
    body:'地元の人と朝市を歩き、旬の魚や発酵食を選んで、一緒に小さな朝ごはんを囲みます。',
    date:'2026-10-04',time:'8:00〜10:00',place:'能登町 朝市周辺',apply:'回覧板から参加希望（デモ）',
    publisher:'能登の住民・飲食店メンバー',fee:'1,200円',people:['/people/sofia.png','/people/mei.png']},
-  {id:'b3',region:'miyama',type:'event',title:'美山の夜、囲炉裏で暮らしトーク',img:'/events/event-3.jpg',
+  {id:'b3',region:'miyama',type:'event',title:'美山の夜、囲炉裏で暮らしトーク',img:'/events/event-3.png',
    body:'囲炉裏を囲み、季節の行事やご近所づきあい、暮らしの知恵を気軽に語り合います。',
    date:'2026-10-10',time:'18:00〜19:30',place:'美山町 地域交流館',apply:'回覧板から参加希望（デモ）',
    publisher:'美山の地域メンバー',fee:'無料',people:['/people/emma.png','/people/lucas.png','/people/mei.png']},
@@ -148,7 +148,7 @@ const TABS=[
 ];
 function nav(){$('#nav').innerHTML=TABS.map(t=>`<button data-tab="${t.id}" class="${t.id===view?'on':''}">
  <svg class="ic" viewBox="0 0 24 24"><path d="${t.ic}"/></svg>${t.label}</button>`).join('');}
-function go(v){view=v;render();$('#main').scrollTop=0;}
+function go(v){view=v;render();$('#main').scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}
 
 /* ---------- render ---------- */
 function render(){
@@ -632,7 +632,7 @@ function applyGuide(gid){
  const r=region(g.region);
  if(r.status==='new'){r.status='learning';r.reflection=r.reflection||{};}
  if(!S.threads.find(t=>t.guideId===gid)){
-   S.threads.push({guideId:gid,region:g.region,msgs:[
+   S.threads.unshift({guideId:gid,region:g.region,msgs:[
      {who:'me',text:`${r.name}のこと、ぜひ教えてください。`},
      {who:'them',text:`ようこそ！${r.name}へ。一緒にまちを歩きましょう。まず何が気になりますか？`}
    ]});
