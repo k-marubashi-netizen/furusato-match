@@ -111,13 +111,13 @@ function seed(){return{
   ]}
  ],
  goalGuide:{},
- me:{name:'あなた',handle:'furusato_you',bio:'ふるさとを増やしています。次に「ただいま」と言いに行く場所を探し中。',img:''}
+ me:{name:'あなた',handle:'furusato_you',bio:'ふるさとを増やしています。次に「ただいま」と言いに行く場所を探し中。',img:'/people/me.png'}
 }}
 
 /* ---------- state / storage ---------- */
 const KEY='furusato-match-v8';
 let S=load();
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===8)return o;}}catch(e){}return seed();}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===8){if(o.me&&!o.me.img)o.me.img='/people/me.png';return o;}}}catch(e){}return seed();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function resetAll(){S=seed();save();go('home');toast('デモを初期状態に戻しました');}
 
