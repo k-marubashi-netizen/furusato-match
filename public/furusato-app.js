@@ -24,7 +24,7 @@ const LOGOG=`<span style="color:var(--green)" class="logo">${IC.logo}</span>`;
 
 /* ---------- seed data ---------- */
 function seed(){return{
- version:7,
+ version:8,
  regions:[
   {id:'otari',name:'小谷村',pref:'長野県',prefId:'nagano',status:'certified',photo:'/events/event-1.png',
    blurb:'雪国の里山。田んぼの畦道と山の恵み、湯けむりの暮らし。',
@@ -110,13 +110,14 @@ function seed(){return{
      en:'Wonderful. I’ll explain everything from the etiquette around the hearth to the wisdom of daily life here.'}
   ]}
  ],
- goalGuide:{}
+ goalGuide:{},
+ me:{name:'あなた',handle:'furusato_you',bio:'ふるさとを増やしています。次に「ただいま」と言いに行く場所を探し中。',img:''}
 }}
 
 /* ---------- state / storage ---------- */
-const KEY='furusato-match-v7';
+const KEY='furusato-match-v8';
 let S=load();
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===7)return o;}}catch(e){}return seed();}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===8)return o;}}catch(e){}return seed();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function resetAll(){S=seed();save();go('home');toast('デモを初期状態に戻しました');}
 
@@ -146,16 +147,20 @@ const TABS=[
  {id:'msg',label:'メッセージ',ic:'M4 5h16v11H9l-4 4z'},
  {id:'my',label:'マイページ',ic:'M4 20a8 8 0 0116 0M12 11a4 4 0 100-8 4 4 0 000 8z'}
 ];
+let openThread=null; // guideId of the message thread being viewed (LINE-style), null = list
 function nav(){$('#nav').innerHTML=TABS.map(t=>`<button data-tab="${t.id}" class="${t.id===view?'on':''}">
  <svg class="ic" viewBox="0 0 24 24"><path d="${t.ic}"/></svg>${t.label}</button>`).join('');}
-function go(v){view=v;render();$('#main').scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}
+function go(v,keepMsg){if(!(v==='msg'&&keepMsg))openThread=null;view=v;render();$('#main').scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}
 
 /* ---------- render ---------- */
 function render(){
  nav();
  const m=$('#main');
  m.innerHTML=({home:homeView,map:mapView,board:boardView,msg:msgView,my:myView}[view])();
+ const chatting=(view==='msg'&&openThread);
+ m.classList.toggle('chat',!!chatting);
  if(view==='map')initMap();
+ if(chatting){const sc=$('#chatscroll');if(sc)sc.scrollTop=sc.scrollHeight;}
 }
 
 /* ===== HOME ===== */
@@ -529,37 +534,56 @@ function postForm(){
    $('#peventfields').classList.toggle('hidden',pt!=='event');});
 }
 
-/* ===== MESSAGES ===== */
-function msgView(){
+/* ===== MESSAGES (LINE-style: list -> open chat) ===== */
+function msgView(){ return openThread?msgChat(openThread):msgList(); }
+function msgList(){
  return `
- <div class="hd">${LOGOG}<div><h1>メッセージ</h1><div class="sub">ガイドとのやりとり（デモ・翻訳つき）</div></div></div>
- <div class="pad" style="margin-top:12px">
- ${S.threads.length?S.threads.map(msgThread).join('')
-   :`<div class="card" style="padding:24px;text-align:center">
+ <div class="hd">${LOGOG}<div><h1>メッセージ</h1><div class="sub">タップで会話を開きます（デモ・翻訳つき）</div></div></div>
+ <div class="pad" style="margin-top:8px">
+ ${S.threads.length?`<div class="mlist">${S.threads.map(msgListRow).join('')}</div>`
+   :`<div class="card" style="padding:24px;text-align:center;margin-top:8px">
      <p style="font-weight:700">まだやりとりはありません</p>
      <p class="muted" style="font-size:13px;margin:6px 0 12px">マップやホームからガイドに「交流を申し込む」と、ここにデモのやりとりが表示されます。</p>
      <button class="btn sm" data-go="map">地域とガイドを探す</button></div>`}
-   <p class="muted" style="font-size:11px;margin-top:6px">※ 送受信・翻訳はデモ表示です。実際の送信や外部サービス連携は行われません。翻訳の文面はサンプルです。</p>
+   <p class="muted" style="font-size:11px;margin-top:10px">※ 送受信・翻訳はデモ表示です。実際の送信や外部サービス連携は行われません。翻訳の文面はサンプルです。</p>
  </div>`;
 }
-function msgThread(t){
+function msgListRow(t){
  const g=guide(t.guideId);const r=region(t.region);
- return `<div class="card msgcard">
-   <div class="msghead">
-     ${avatar(g?g.img:'',g?g.name:'ガイド','sm')}
-     <div style="flex:1;min-width:0">
-       <div style="font-weight:700;font-size:14px">${esc(g?g.name:'ガイド')}</div>
-       <div class="muted" style="font-size:11px">${r?r.pref+'・'+r.name:''}${g?'　'+originLabel[g.origin]:''}</div>
-     </div>
-     ${g&&g.langs.includes('English')?'<span class="pill green" style="font-size:10px">'+IC.globe+' EN可</span>':''}
+ const last=t.msgs[t.msgs.length-1]||{};
+ const prev=(last.who==='me'?'あなた: ':'')+ (last.text||'');
+ return `<button class="mlistrow" data-openmsg="${t.guideId}">
+   ${avatar(g?g.img:'',g?g.name:'ガイド','sm')}
+   <span class="mlistbody">
+     <span class="mlisttop"><span class="mlistname">${esc(g?g.name:'ガイド')}</span>
+       <span class="muted mlistloc">${r?r.pref+'・'+r.name:''}</span></span>
+     <span class="muted mlistprev">${esc(prev)}</span>
+   </span>
+   <svg viewBox="0 0 24 24" class="i mlistchev"><path d="M9 6l6 6-6 6"/></svg>
+ </button>`;
+}
+function msgChat(gid){
+ const t=S.threads.find(x=>x.guideId===gid);if(!t)return msgList();
+ const g=guide(gid);const r=region(t.region);
+ return `<div class="chatwrap">
+ <div class="chathd">
+   <button class="chatback" data-msgback aria-label="戻る"><svg viewBox="0 0 24 24" class="i"><path d="M15 6l-6 6 6 6"/></svg></button>
+   ${avatar(g?g.img:'',g?g.name:'ガイド','sm')}
+   <div style="flex:1;min-width:0">
+     <div style="font-weight:700;font-size:15px;line-height:1.2">${esc(g?g.name:'ガイド')}</div>
+     <div class="muted" style="font-size:11px">${r?r.pref+'・'+r.name:''}${g?'　'+originLabel[g.origin]:''}</div>
    </div>
-   <div class="msgbody">
-     ${t.msgs.map((m,i)=>bubble(t.guideId,i,m,g)).join('')}
-   </div>
-   <div class="row msgin">
-     <input id="mi-${t.guideId}" placeholder="メッセージを入力（デモ）">
-     <button class="btn sm" data-send="${t.guideId}">送信 <span class="demo">デモ</span></button>
-   </div></div>`;
+   ${g&&g.langs.includes('English')?'<span class="pill green" style="font-size:10px">'+IC.globe+' EN可</span>':''}
+ </div>
+ <div class="chatscroll" id="chatscroll">
+   <div class="chatdaysep"><span>デモの会話</span></div>
+   ${t.msgs.map((m,i)=>bubble(gid,i,m,g)).join('')}
+ </div>
+ <div class="chatin">
+   <input id="mi-${gid}" placeholder="メッセージを入力（デモ）" autocomplete="off">
+   <button class="chatsend" data-send="${gid}" aria-label="送信"><svg viewBox="0 0 24 24" class="i"><path d="M4 10.5h9.5V6l6.5 6-6.5 6v-4.5H4z"/></svg></button>
+ </div>
+ </div>`;
 }
 function bubble(gid,i,m,g){
  const mine=m.who==='me';
@@ -577,20 +601,75 @@ function bubble(gid,i,m,g){
 }
 
 /* ===== MY PAGE ===== */
+function meAvatar(cls){
+ const me=S.me||{};
+ return me.img?`<img class="meav ${cls||''}" src="${me.img}" alt="プロフィール画像" loading="lazy"
+   onerror="this.classList.add('hide');this.nextElementSibling&&(this.nextElementSibling.style.display='inline-flex')">
+   <span class="meav ph ${cls||''}" style="display:none">${esc((me.name||'あ').slice(0,1))}</span>`
+   :`<span class="meav ph ${cls||''}">${esc((me.name||'あ').slice(0,1))}</span>`;
+}
+function pgridCell(r){
+ const dot=r.status==='certified'?'var(--gold)':'var(--shu)';
+ const bg=r.photo?`background-image:url('${r.photo}')`:'background:linear-gradient(135deg,var(--green),var(--green-tint))';
+ return `<button class="pcell" data-region="${r.id}" style="${bg}">
+   <span class="pcelldot" style="background:${dot}"></span>
+   <span class="pcellname">${esc(r.name)}</span>
+ </button>`;
+}
+function editProfile(){
+ const me=S.me||{};
+ openSheet(`<button class="x" data-close>×</button>
+  <h2 style="font-size:20px">プロフィールを編集 <span class="demo">デモ</span></h2>
+  <p class="muted" style="font-size:12px;margin-top:4px">この内容はこのブラウザ内だけに保存されます。</p>
+  <div style="display:flex;justify-content:center;margin:14px 0 4px">${meAvatar('lg')}</div>
+  <p class="muted" style="font-size:11px;text-align:center;margin:0 0 6px">プロフィール画像は public/people/me.png を差し替えると反映されます</p>
+  <label class="f">表示名</label><input id="pfname" maxlength="20" value="${esc(me.name||'')}">
+  <label class="f">ユーザー名（@）</label><input id="pfhandle" maxlength="20" value="${esc(me.handle||'')}">
+  <label class="f">ひとこと（自己紹介）</label><textarea id="pfbio" rows="3" maxlength="120">${esc(me.bio||'')}</textarea>
+  <div class="row" style="margin-top:16px">
+    <button class="btn" data-act="saveProfile">保存する</button>
+    <button class="btn ghost" data-close>やめる</button>
+  </div>`);
+}
+function saveProfile(){
+ const n=($('#pfname').value||'').trim();const h=($('#pfhandle').value||'').trim().replace(/^@/,'');
+ const b=($('#pfbio').value||'').trim();
+ S.me=S.me||{};S.me.name=n||'あなた';S.me.handle=h||'furusato_you';S.me.bio=b;
+ save();closeSheet();render();toast('プロフィールを保存しました（デモ）');
+}
 function myView(){
- const cs=certified();
+ const cs=certified();const me=S.me||{};
+ const grid=S.regions.filter(r=>r.status==='certified'||r.status==='learning');
  return `
- <div class="hd">${LOGOG}<div><h1>マイページ</h1><div class="sub">わたしのふるさと</div></div></div>
+ <div class="hd">${LOGOG}<div><h1>マイページ</h1><div class="sub">わたしのプロフィール</div></div></div>
  <div class="pad" style="margin-top:12px">
-   <div class="card" style="padding:16px;background:var(--gold-tint);border-color:var(--gold)">
-     <div style="display:flex;align-items:baseline;gap:8px">
-       <span class="gcount">${cs.length}</span><span style="font-weight:700">か所の“ふるさと”</span></div>
-     <p class="muted" style="font-size:12.5px;margin:6px 0 0">こんなふるさとは、何個あってもいい。</p>
+
+   <!-- ===== profile (Instagram/LINE風) ===== -->
+   <div class="card profcard">
+     <div class="profcover"></div>
+     <div class="profhead">
+       ${meAvatar('lg')}
+       <div class="profstats">
+         <button class="pstat" data-go="map"><b>${cs.length}</b><span>ふるさと</span></button>
+         <button class="pstat" data-act="myThreads"><b>${S.threads.length}</b><span>交流</span></button>
+         <button class="pstat" data-act="mySaved"><b>${S.saved.length}</b><span>保存</span></button>
+       </div>
+     </div>
+     <div class="profbody">
+       <div class="profname">${esc(me.name||'あなた')}</div>
+       <div class="muted profhandle">@${esc(me.handle||'furusato_you')}</div>
+       <p class="profbio">${esc(me.bio||'')}</p>
+       <div class="row" style="gap:8px;margin-top:10px">
+         <button class="btn ghost sm" data-act="editProfile">プロフィールを編集</button>
+         <button class="btn ghost sm" data-go="map">ふるさとを増やす</button>
+       </div>
+     </div>
    </div>
 
-   <h3 style="font-size:15px;margin:18px 0 8px">認定済みのふるさと</h3>
-   ${cs.length?cs.map(regionRow).join('')
-   :'<p class="muted" style="font-size:13px">まだありません。学習中の地域で振り返りを終えると認定できます。</p>'}
+   <div class="proftabs"><span class="on">${IC.pin} わたしのふるさと</span></div>
+   ${grid.length?`<div class="pgrid">${grid.map(pgridCell).join('')}</div>`
+     :'<p class="muted" style="font-size:13px;text-align:center;padding:20px 0">まだふるさとがありません。マップから地域を知るところから始めましょう。</p>'}
+   <p class="muted" style="font-size:11px;margin-top:10px">金色＝ふるさと認定済み／朱＝交流・学習中。タップで地域の詳細が開きます。</p>
 
    <h3 style="font-size:15px;margin:20px 0 8px">認定後の二つの楽しみ方</h3>
    <div class="two">
@@ -637,7 +716,7 @@ function applyGuide(gid){
      {who:'them',text:`ようこそ！${r.name}へ。一緒にまちを歩きましょう。まず何が気になりますか？`}
    ]});
  }
- save();closeSheet();toast('交流を申し込みました（デモ）。メッセージへ');go('msg');
+ save();closeSheet();toast('交流を申し込みました（デモ）。メッセージへ');openThread=gid;go('msg',true);
 }
 function certify(id){const r=region(id);r.status='certified';save();closeSheet();
  setTimeout(()=>{go('map');toast(IC.starF+' ふるさと認定！地図の目印が金色になりました');},60);}
@@ -664,6 +743,10 @@ $('#app').addEventListener('click',e=>{
    if(a==='preview'){doPreview();return;}
    if(a==='reset'){resetAll();return;}
    if(a==='theme'){toggleTheme();return;}
+   if(a==='editProfile'){editProfile();return;}
+   if(a==='saveProfile'){saveProfile();return;}
+   if(a==='myThreads'){closeSheet();go('msg');return;}
+   if(a==='mySaved'){closeSheet();boardRegion='all';boardType='all';go('board');toast('保存した回覧板は「保存する」を押した項目です（デモ）');return;}
    return;
  }
  const tog=t.closest('[data-toggle]');
@@ -677,10 +760,17 @@ $('#app').addEventListener('click',e=>{
  const jn=t.closest('[data-join]'); if(jn){const id=jn.dataset.join;if(!S.joined.includes(id))S.joined.push(id);save();
    toast('参加を希望しました（デモ）');if($('#sheet').classList.contains('open'))openBoard(id);else render();return;}
  const btype=t.closest('[data-btype]'); if(btype){boardType=btype.dataset.btype;render();return;}
- const send=t.closest('[data-send]'); if(send){const gid=send.dataset.send;const inp=$('#mi-'+gid);const v=(inp.value||'').trim();
-   if(!v)return;const th=S.threads.find(x=>x.guideId===gid);th.msgs.push({who:'me',text:v});
-   th.msgs.push({who:'them',text:'（デモ返信）ありがとうございます！当日を楽しみにしています。'});save();render();return;}
+ const om=t.closest('[data-openmsg]'); if(om){openThread=om.dataset.openmsg;render();return;}
+ if(t.closest('[data-msgback]')){openThread=null;render();return;}
+ const send=t.closest('[data-send]'); if(send){sendMsg(send.dataset.send);return;}
 });
+function sendMsg(gid){
+ const inp=$('#mi-'+gid);if(!inp)return;const v=(inp.value||'').trim();if(!v)return;
+ const th=S.threads.find(x=>x.guideId===gid);if(!th)return;
+ th.msgs.push({who:'me',text:v});
+ th.msgs.push({who:'them',text:'（デモ返信）ありがとうございます！当日を楽しみにしています。'});
+ save();render();}
+$('#app').addEventListener('keydown',e=>{if(e.key==='Enter'){const inp=e.target.closest('input[id^="mi-"]');if(inp){e.preventDefault();sendMsg(inp.id.slice(3));}}});
 $('#main').addEventListener('change',e=>{if(e.target.id==='bregion'){boardRegion=e.target.value;render();}});
 
 /* preview + post inside sheet */
