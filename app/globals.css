@@ -114,3 +114,72 @@ label.f{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margi
 .gcount{font-family:"Zen Maru Gothic";font-size:34px;color:var(--gold-deep);line-height:1}
 a{color:var(--green-deep)}
 .hidden{display:none!important}
+
+/* ---- icons ---- */
+.i{width:1em;height:1em;display:inline-block;vertical-align:-0.14em;fill:none;stroke:currentColor;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.i.fill{fill:currentColor;stroke:none}
+:root{--map-idle:#e7e0cf;--map-line:#d8d0bb}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--map-idle:#2c342b;--map-line:#3a4335}}
+:root[data-theme="dark"]{--map-idle:#2c342b;--map-line:#3a4335}
+/* ---- hero photo ---- */
+.hero.photo{background-size:cover;background-position:center}
+/* ---- region row card ---- */
+.rowcard{display:flex;gap:0;width:100%;text-align:left;padding:0;overflow:hidden;margin-bottom:10px;align-items:stretch;border:1px solid var(--line)}
+.rowcard .rowimg{width:96px;flex:0 0 96px;object-fit:cover;align-self:stretch;background:var(--surface-2)}
+.rowcard .rowimg.ph{display:flex;align-items:center;justify-content:center;color:var(--green);font-size:26px}
+.rowbody{flex:1;min-width:0;padding:11px 13px;display:flex;flex-direction:column;gap:3px}
+.rowtitle{font-weight:700;font-size:14px}
+.rowsub{font-size:12px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rowguide{display:flex;align-items:center;gap:6px;font-size:11px;margin-top:2px}
+/* ---- avatars ---- */
+.avatar{width:56px;height:56px;flex:0 0 auto;border-radius:16px;object-fit:cover;background:var(--surface-2)}
+.avatar.sm{width:42px;height:42px;border-radius:13px}
+.avatar.xs{width:20px;height:20px;border-radius:7px}
+.avatar.ph{display:inline-flex;align-items:center;justify-content:center;color:var(--green)}
+/* ---- guide card ---- */
+.guidecard{display:flex;gap:12px;padding:12px;margin-bottom:8px}
+.guidecard .gbody{flex:1;min-width:0}
+/* ---- board images ---- */
+.bimg{width:100%;height:150px;object-fit:cover;display:block}
+.attend{display:flex;align-items:center;margin-top:10px}
+.attend img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--surface);margin-left:-8px}
+.attend img:first-child{margin-left:0}
+.metaline{display:flex;align-items:center;gap:6px}
+.boardmini{display:flex;gap:10px;width:100%;text-align:left;padding:8px;margin-bottom:6px;align-items:center;border:1px solid var(--line)}
+.bminiimg{width:54px;height:54px;flex:0 0 54px;border-radius:12px;object-fit:cover;background:var(--surface-2)}
+.bminiimg.ph{display:flex;align-items:center;justify-content:center;color:var(--green);font-size:22px}
+/* ---- region detail hero ---- */
+.rhero{height:170px;border-radius:16px;background-size:cover;background-position:center;margin-top:4px;background-color:var(--surface-2)}
+.rhero.grad{background-image:linear-gradient(135deg,var(--green),var(--green-tint))}
+/* ---- map ---- */
+.mapcard{padding:12px 12px 8px;background:var(--sea)}
+.mapwrap{position:relative;border-radius:14px;overflow:hidden;background:var(--sea)}
+#jpmap{width:100%;height:auto;display:block;touch-action:none;cursor:grab}
+#jpmap:active{cursor:grabbing}
+#jpmap .prf{transition:fill .2s}
+#jpmap .prf.act{cursor:pointer}
+#jpmap .pin text{pointer-events:none}
+.mapctrl{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px}
+.mapctrl button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:var(--shadow)}
+.mapctrl button:active{transform:scale(.94)}
+/* ---- messages ---- */
+.msgcard{padding:0;overflow:hidden;margin-bottom:14px}
+.msghead{display:flex;align-items:center;gap:10px;padding:12px 13px;border-bottom:1px solid var(--line);background:var(--surface)}
+.msgbody{padding:12px 13px;background:var(--bg)}
+.mrow{display:flex;gap:8px;margin-bottom:10px;align-items:flex-end}
+.mrow.me{justify-content:flex-end}
+.mrow .bubav{width:26px;height:26px;border-radius:9px;object-fit:cover;flex:0 0 auto}
+.bwrap{max-width:78%}
+.mrow.me .bwrap{align-items:flex-end;display:flex;flex-direction:column}
+.bubble{padding:9px 12px;border-radius:15px;font-size:13px;line-height:1.6}
+.bthem{background:var(--surface-2);color:var(--ink);border-bottom-left-radius:5px}
+.bme{background:var(--green);color:#fff;border-bottom-right-radius:5px}
+.trbtn{margin-top:4px;border:1px solid var(--line);background:var(--surface);color:var(--green-deep);
+  border-radius:999px;font-size:11px;font-weight:700;padding:3px 10px;display:inline-flex;align-items:center;gap:4px}
+.trtext{display:none;margin-top:5px;padding:8px 11px;background:var(--green-tint);border-radius:12px;
+  font-size:12.5px;line-height:1.6;color:var(--ink)}
+.trtext.show{display:block}
+.msgin{padding:10px 13px;border-top:1px solid var(--line);background:var(--surface);gap:8px;flex-wrap:nowrap}
+.msgin input{flex:1}
