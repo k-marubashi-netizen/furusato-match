@@ -1,42 +1,24 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_JP, Zen_Maru_Gothic } from 'next/font/google'
 import './globals.css'
 
-const notoSansJP = Noto_Sans_JP({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-noto-sans-jp',
-})
-
-const zenMaru = Zen_Maru_Gothic({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--font-zen-maru',
-})
-
 export const metadata: Metadata = {
-  title: 'ふるさとマッチ｜"ただいま"と言える場所をつくる',
-  description:
-    '訪日外国人と、地域に暮らす案内役「ふるさとガイド」をつなぐ交流マッチングアプリ。観光客を増やすのではなく、"ふるさと"を持つ人を増やす。',
+  title: 'ふるさとマッチ｜誰もがふるさとガイドになれるアプリ',
+  description: '出会いから“ふるさと”が増えていく交流アプリ。居住地や国籍を問わず参加でき、地域を知り、希望する人はふるさとガイドを目指せます。',
+  icons: { icon: '/icon.svg' },
 }
-
 export const viewport: Viewport = {
-  colorScheme: 'light',
-  themeColor: '#2f6f6a',
-  userScalable: false,
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
+  colorScheme: 'light dark', themeColor: '#3f7d5f',
+  width: 'device-width', initialScale: 1, viewportFit: 'cover',
 }
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja" className={`bg-background ${notoSansJP.variable} ${zenMaru.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+    <html lang="ja">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" />
+      </head>
+      <body>{children}</body>
     </html>
   )
 }
