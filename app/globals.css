@@ -284,3 +284,10 @@ a{color:var(--green-deep)}
 .langfeat{display:flex;flex-direction:column;gap:10px}
 .langfeat>div{background:var(--surface-2);border-radius:12px;padding:10px 12px}
 .langfeat p{font-size:12px;color:var(--ink-soft);margin:6px 0 0;line-height:1.6}
+
+/* chat header auto-translate toggle */
+.chattr{display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink-soft);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:700}
+.chattr .i{width:15px;height:15px}
+.chattr.on{background:var(--green);color:#fff;border-color:var(--green)}
+.chattr:active{transform:scale(.96)}

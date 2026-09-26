@@ -95,22 +95,28 @@ function seed(){return{
  joined:[],
  threads:[
   {guideId:'g1',region:'otari',msgs:[
-    {who:'them',text:'おかえりなさい。今年の棚田、きれいに色づきましたよ。次はいつ帰ってこられますか？'},
-    {who:'me',text:'稲刈りの頃にまた伺いたいです。畦道さんぽ、楽しみにしています。'},
-    {who:'them',text:'お待ちしています。長靴だけ用意してくださいね。'}
+    {who:'them',text:'おかえりなさい。今年の棚田、きれいに色づきましたよ。次はいつ帰ってこられますか？',
+     en:'Welcome home. The rice terraces have turned a beautiful gold this year. When can you visit next?'},
+    {who:'me',text:'稲刈りの頃にまた伺いたいです。畦道さんぽ、楽しみにしています。',
+     en:'I’d love to come again around the rice harvest. I’m looking forward to the footpath walk.'},
+    {who:'them',text:'お待ちしています。長靴だけ用意してくださいね。',
+     en:'We’ll be waiting. Just bring a pair of rubber boots.'}
   ]},
   {guideId:'g2',region:'noto',msgs:[
-    {who:'me',text:'朝市に初めて行きます。何時ごろが一番賑わいますか？'},
+    {who:'me',text:'朝市に初めて行きます。何時ごろが一番賑わいますか？',
+     en:'It’s my first time at the morning market. What time is it busiest?'},
     {who:'them',text:'8時前後がいちばん活気があります。まず一緒に一周しましょう。',
      en:'It gets busiest around 8 a.m. Let’s walk through it together first.'},
-    {who:'me',text:'ありがとうございます。発酵食も教えてください。'},
+    {who:'me',text:'ありがとうございます。発酵食も教えてください。',
+     en:'Thank you. Please tell me about the fermented foods too.'},
     {who:'them',text:'もちろん。いしる（魚醤）のお店に案内しますね。',
      en:'Of course. I’ll take you to a shop that makes ishiru, the local fish sauce.'}
   ]},
   {guideId:'g4',region:'miyama',msgs:[
     {who:'them',text:'Bonjour! 美山へようこそ。かやぶきの里を写真さんぽしましょう。',
      en:'Bonjour! Welcome to Miyama. Let’s take a photo walk through the thatched-roof village.'},
-    {who:'me',text:'囲炉裏の文化についても知りたいです。'},
+    {who:'me',text:'囲炉裏の文化についても知りたいです。',
+     en:'I’d also like to learn about the culture of the irori hearth.'},
     {who:'them',text:'いいですね。火のまわりの作法から、暮らしの知恵までお話しします。',
      en:'Wonderful. I’ll explain everything from the etiquette around the hearth to the wisdom of daily life here.'}
   ]}
@@ -160,6 +166,7 @@ const TABS=[
  {id:'my',label:'マイページ',ic:'M4 20a8 8 0 0116 0M12 11a4 4 0 100-8 4 4 0 000 8z'}
 ];
 let openThread=null; // guideId of the message thread being viewed (LINE-style), null = list
+let autoTr=false;    // auto-translate all messages in the open chat (facade)
 function nav(){$('#nav').innerHTML=TABS.map(t=>`<button data-tab="${t.id}" class="${t.id===view?'on':''}">
  <svg class="ic" viewBox="0 0 24 24"><path d="${t.ic}"/></svg>${t.label}</button>`).join('');}
 function go(v,keepMsg){if(!(v==='msg'&&keepMsg))openThread=null;view=v;render();$('#main').scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}
@@ -609,10 +616,10 @@ function msgChat(gid){
      <div style="font-weight:700;font-size:15px;line-height:1.2">${esc(g?g.name:'ガイド')}</div>
      <div class="muted" style="font-size:11px">${r?r.pref+'・'+r.name:''}${g?'　'+originLabel[g.origin]:''}</div>
    </div>
-   ${g&&g.langs.includes('English')?'<span class="pill green" style="font-size:10px">'+IC.globe+' EN可</span>':''}
+   <button class="chattr ${autoTr?'on':''}" data-autotr aria-label="メッセージをすべて翻訳">${IC.globe}<span>翻訳</span></button>
  </div>
  <div class="chatscroll" id="chatscroll">
-   <div class="chatdaysep"><span>デモの会話</span></div>
+   <div class="chatdaysep"><span>${autoTr?'翻訳表示中（デモ・自動翻訳）':'デモの会話'}</span></div>
    ${t.msgs.map((m,i)=>bubble(gid,i,m,g)).join('')}
  </div>
  <div class="chatin">
@@ -625,8 +632,9 @@ function bubble(gid,i,m,g){
  const mine=m.who==='me';
  const trId=`tr-${gid}-${i}`;
  const av=(!mine&&g)?`<img class="bubav" src="${g.img}" alt="" loading="lazy">`:'';
- const tr=m.en?`<button class="trbtn" data-tr="${trId}">${IC.globe} 翻訳を表示</button>
-     <div class="trtext" id="${trId}"><span class="muted" style="font-size:11px;font-weight:700">English</span><br>${esc(m.en)}</div>`:'';
+ const show=autoTr&&!!m.en;
+ const tr=m.en?`<button class="trbtn" data-tr="${trId}">${IC.globe} ${show?'翻訳を隠す':'翻訳を表示'}</button>
+     <div class="trtext ${show?'show':''}" id="${trId}"><span class="muted" style="font-size:11px;font-weight:700">English（自動翻訳）</span><br>${esc(m.en)}</div>`:'';
  return `<div class="mrow ${mine?'me':'them'}">
    ${av}
    <div class="bwrap">
@@ -767,8 +775,9 @@ $('#app').addEventListener('click',e=>{
  const gto=t.closest('[data-go]'); if(gto){go(gto.dataset.go);return;}
  if(t.closest('[data-close]')){closeSheet();return;}
  if(t.id==='sheetBg'){closeSheet();return;}
+ if(t.closest('[data-autotr]')){autoTr=!autoTr;render();toast(autoTr?'メッセージの自動翻訳をオンにしました（デモ）':'自動翻訳をオフにしました');return;}
  const trb=t.closest('[data-tr]'); if(trb){const el=document.getElementById(trb.dataset.tr);
-   if(el){const on=el.classList.toggle('show');trb.innerHTML=(on?'':IC.globe+' ')+(on?'翻訳を隠す':'翻訳を表示');}return;}
+   if(el){const on=el.classList.toggle('show');trb.innerHTML=IC.globe+' '+(on?'翻訳を隠す':'翻訳を表示');}return;}
  const act=t.closest('[data-act]');
  if(act){
    const a=act.dataset.act, rid=act.dataset.region;
@@ -799,15 +808,16 @@ $('#app').addEventListener('click',e=>{
  const jn=t.closest('[data-join]'); if(jn){const id=jn.dataset.join;if(!S.joined.includes(id))S.joined.push(id);save();
    toast('参加を希望しました（デモ）');if($('#sheet').classList.contains('open'))openBoard(id);else render();return;}
  const btype=t.closest('[data-btype]'); if(btype){boardType=btype.dataset.btype;render();return;}
- const om=t.closest('[data-openmsg]'); if(om){openThread=om.dataset.openmsg;render();return;}
- if(t.closest('[data-msgback]')){openThread=null;render();return;}
+ const om=t.closest('[data-openmsg]'); if(om){openThread=om.dataset.openmsg;autoTr=false;render();return;}
+ if(t.closest('[data-msgback]')){openThread=null;autoTr=false;render();return;}
  const send=t.closest('[data-send]'); if(send){sendMsg(send.dataset.send);return;}
 });
 function sendMsg(gid){
  const inp=$('#mi-'+gid);if(!inp)return;const v=(inp.value||'').trim();if(!v)return;
  const th=S.threads.find(x=>x.guideId===gid);if(!th)return;
  th.msgs.push({who:'me',text:v});
- th.msgs.push({who:'them',text:'（デモ返信）ありがとうございます！当日を楽しみにしています。'});
+ th.msgs.push({who:'them',text:'（デモ返信）ありがとうございます！当日を楽しみにしています。',
+   en:'(demo reply) Thank you! I’m looking forward to the day.'});
  save();render();}
 $('#app').addEventListener('keydown',e=>{if(e.key==='Enter'){const inp=e.target.closest('input[id^="mi-"]');if(inp){e.preventDefault();sendMsg(inp.id.slice(3));}}});
 $('#main').addEventListener('change',e=>{if(e.target.id==='bregion'){boardRegion=e.target.value;render();}});
