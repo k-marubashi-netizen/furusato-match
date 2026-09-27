@@ -771,25 +771,23 @@ function myView(){
  <div class="hd">${LOGOG}<div><h1>マイページ</h1><div class="sub">わたしのプロフィール</div></div></div>
  <div class="pad" style="margin-top:12px">
 
-   <!-- ===== profile (Instagram/LINE風) ===== -->
+   <!-- ===== profile ===== -->
    <div class="card profcard">
      <div class="profcover"></div>
-     <div class="profmain">
-       ${meAvatar('lg')}
-       <div class="profid">
-         <div class="profname">${esc(me.name||'あなた')}</div>
-         <div class="muted profhandle">@${esc(me.handle||'furusato_you')}</div>
+     <div class="profinner">
+       <div class="profavwrap">${meAvatar('lg')}</div>
+       <div class="profname">${esc(me.name||'あなた')}</div>
+       <div class="profhandle">@${esc(me.handle||'furusato_you')}</div>
+       ${me.bio?`<p class="profbio">${esc(me.bio)}</p>`:''}
+       <div class="profstatbar">
+         <button class="pstat" data-go="map"><b class="s-gold">${cs.length}</b><span>ふるさと</span></button>
+         <button class="pstat" data-act="myThreads"><b>${S.threads.length}</b><span>交流</span></button>
+         <button class="pstat" data-act="mySaved"><b>${S.saved.length}</b><span>保存</span></button>
        </div>
-     </div>
-     <p class="profbio">${esc(me.bio||'')}</p>
-     <div class="profstatbar">
-       <button class="pstat" data-go="map"><b>${cs.length}</b><span>ふるさと</span></button>
-       <button class="pstat" data-act="myThreads"><b>${S.threads.length}</b><span>交流</span></button>
-       <button class="pstat" data-act="mySaved"><b>${S.saved.length}</b><span>保存</span></button>
-     </div>
-     <div class="profbtns">
-       <button class="btn ghost sm block" data-act="editProfile">プロフィールを編集</button>
-       <button class="btn sm block" data-go="map">ふるさとを増やす</button>
+       <div class="profbtns">
+         <button class="btn ghost sm block" data-act="editProfile">プロフィールを編集</button>
+         <button class="btn sm block" data-act="findGuide">ふるさとを増やす</button>
+       </div>
      </div>
    </div>
 
