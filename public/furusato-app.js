@@ -17,14 +17,16 @@ const IC={
  plus:'<svg viewBox="0 0 24 24" class="i"><path d="M12 5v14M5 12h14"/></svg>',
  minus:'<svg viewBox="0 0 24 24" class="i"><path d="M5 12h14"/></svg>',
  target:'<svg viewBox="0 0 24 24" class="i"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.4"/></svg>',
- check:'<svg viewBox="0 0 24 24" class="i"><path d="M5 12.5l4.5 4.5L19 7"/></svg>'
+ check:'<svg viewBox="0 0 24 24" class="i"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+ bell:'<svg viewBox="0 0 24 24" class="i"><path d="M6 9a6 6 0 0112 0c0 5 2 6 2 6H4s2-1 2-6zM10 20a2 2 0 004 0"/></svg>',
+ search:'<svg viewBox="0 0 24 24" class="i"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>'
 };
 const LOGO=`<span style="color:#fff;display:inline-flex">${IC.logo}</span>`;
 const LOGOG=`<span style="color:var(--green)" class="logo">${IC.logo}</span>`;
 
 /* ---------- seed data ---------- */
 function seed(){return{
- version:8,
+ version:9,
  regions:[
   {id:'otari',name:'小谷村',pref:'長野県',prefId:'nagano',status:'certified',photo:'/events/event-1.png',
    blurb:'雪国の里山。田んぼの畦道と山の恵み、湯けむりの暮らし。',
@@ -94,7 +96,7 @@ function seed(){return{
  saved:[],
  joined:[],
  threads:[
-  {guideId:'g1',region:'otari',msgs:[
+  {id:'t-g1',guideId:'g1',region:'otari',msgs:[
     {who:'them',text:'おかえりなさい。今年の棚田、きれいに色づきましたよ。次はいつ帰ってこられますか？',
      en:'Welcome home. The rice terraces have turned a beautiful gold this year. When can you visit next?'},
     {who:'me',text:'稲刈りの頃にまた伺いたいです。畦道さんぽ、楽しみにしています。',
@@ -102,7 +104,7 @@ function seed(){return{
     {who:'them',text:'お待ちしています。長靴だけ用意してくださいね。',
      en:'We’ll be waiting. Just bring a pair of rubber boots.'}
   ]},
-  {guideId:'g2',region:'noto',msgs:[
+  {id:'t-g2',guideId:'g2',region:'noto',msgs:[
     {who:'me',text:'朝市に初めて行きます。何時ごろが一番賑わいますか？',
      en:'It’s my first time at the morning market. What time is it busiest?'},
     {who:'them',text:'8時前後がいちばん活気があります。まず一緒に一周しましょう。',
@@ -112,7 +114,7 @@ function seed(){return{
     {who:'them',text:'もちろん。いしる（魚醤）のお店に案内しますね。',
      en:'Of course. I’ll take you to a shop that makes ishiru, the local fish sauce.'}
   ]},
-  {guideId:'g4',region:'miyama',msgs:[
+  {id:'t-g4',guideId:'g4',region:'miyama',msgs:[
     {who:'them',text:'Bonjour! 美山へようこそ。かやぶきの里を写真さんぽしましょう。',
      en:'Bonjour! Welcome to Miyama. Let’s take a photo walk through the thatched-roof village.'},
     {who:'me',text:'囲炉裏の文化についても知りたいです。',
@@ -121,14 +123,22 @@ function seed(){return{
      en:'Wonderful. I’ll explain everything from the etiquette around the hearth to the wisdom of daily life here.'}
   ]}
  ],
- goalGuide:{},
+ requests:[
+  {id:'rq1',region:'otari',name:'Lucas',img:'/people/lucas.png',origin:'overseas',langs:['English'],
+   text:'はじめまして。小谷村を案内してほしいです。畦道さんぽと、雪国の暮らしに興味があります。10月に行けます。',
+   en:'Hello! I’d love a guide in Otari. I’m interested in the footpath walk and snow-country life. I can come in October.'},
+  {id:'rq2',region:'otari',name:'Mei',img:'/people/mei.png',origin:'overseas',langs:['日本語','English'],
+   text:'こんにちは。郷土料理づくりを体験したいです。翻訳機も使えます。よろしくお願いします。',
+   en:'Hi! I’d like to try making local cuisine. I can use a translation device too. Thank you!'}
+ ],
+ goalGuide:{otari:true},
  me:{name:'あなた',handle:'furusato_you',bio:'ふるさとを増やしています。次に「ただいま」と言いに行く場所を探し中。',img:'/people/me.png'}
 }}
 
 /* ---------- state / storage ---------- */
-const KEY='furusato-match-v8';
+const KEY='furusato-match-v9';
 let S=load();
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===8){if(o.me&&!o.me.img)o.me.img='/people/me.png';return o;}}}catch(e){}return seed();}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===9){if(o.me&&!o.me.img)o.me.img='/people/me.png';return o;}}}catch(e){}return seed();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function resetAll(){S=seed();save();go('home');toast('デモを初期状態に戻しました');}
 
@@ -167,8 +177,10 @@ const TABS=[
 ];
 let openThread=null; // guideId of the message thread being viewed (LINE-style), null = list
 let autoTr=false;    // auto-translate all messages in the open chat (facade)
-function nav(){$('#nav').innerHTML=TABS.map(t=>`<button data-tab="${t.id}" class="${t.id===view?'on':''}">
- <svg class="ic" viewBox="0 0 24 24"><path d="${t.ic}"/></svg>${t.label}</button>`).join('');}
+let searchRegion='all', searchLang='all'; // guide search filters
+function nav(){const pend=pendingReqs().length;
+ $('#nav').innerHTML=TABS.map(t=>`<button data-tab="${t.id}" class="${t.id===view?'on':''}">
+ <span class="navic">${(t.id==='msg'&&pend)?`<span class="navbadge">${pend}</span>`:''}<svg class="ic" viewBox="0 0 24 24"><path d="${t.ic}"/></svg></span>${t.label}</button>`).join('');}
 function go(v,keepMsg){if(!(v==='msg'&&keepMsg))openThread=null;view=v;render();$('#main').scrollTop=0;try{window.scrollTo(0,0);}catch(e){}}
 
 /* ---------- render ---------- */
@@ -236,6 +248,7 @@ function homeView(){
  <div class="pad" style="margin-top:20px">
    <div class="eyebrow">いま出会えるふるさと</div>
    <h2 class="sec-t" style="margin-bottom:10px">地域とガイド</h2>
+   <button class="btn block" data-act="findGuide" style="margin-bottom:10px">${IC.search} ガイドを探す（地域・言語で検索）</button>
    ${S.regions.slice(0,3).map(regionRow).join('')}
    <button class="btn ghost block sm" data-go="map" style="margin-top:4px">すべての地域を見る</button>
  </div>
@@ -287,7 +300,8 @@ let mapK=1,mapX=0,mapY=0,mapActive=[];
 const VBW=438,VBH=516;
 function mapView(){
  return `
- <div class="hd">${LOGOG}<div><h1>マップ</h1><div class="sub">認定した“ふるさと”が金色に増えていきます</div></div></div>
+ <div class="hd">${LOGOG}<div style="flex:1"><h1>マップ</h1><div class="sub">認定した“ふるさと”が金色に増えていきます</div></div>
+   <button class="hdbtn" data-act="findGuide" aria-label="ガイドを探す">${IC.search}</button></div>
  <div class="pad" style="margin-top:12px">
    <div class="card mapcard">
      <div class="mapwrap">
@@ -440,7 +454,7 @@ function openRegion(id){
   <div style="margin-top:14px">${cert}</div>
 
   <h3 style="font-size:15px;margin:18px 0 8px">この地域のふるさとガイド</h3>
-  ${gs.length?gs.map(guideCard).join(''):'<p class="muted" style="font-size:13px">ガイドは準備中です。</p>'}
+  ${gs.length?gs.map(g=>guideCard(g)).join(''):'<p class="muted" style="font-size:13px">ガイドは準備中です。</p>'}
 
   <h3 style="font-size:15px;margin:18px 0 8px">回覧板（この地域）</h3>
   ${bd.length?bd.slice(0,3).map(boardMini).join(''):'<p class="muted" style="font-size:13px">お知らせはまだありません。</p>'}
@@ -451,21 +465,48 @@ function openRegion(id){
  `;
  openSheet(html);
 }
-function guideCard(g){
+function guideCard(g,showRegion){
+ const r=showRegion?region(g.region):null;
  return `<div class="card guidecard">
    ${avatar(g.img,g.name)}
    <div class="gbody">
      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center">
        <div style="font-weight:700">${esc(g.name)}</div>
        <span class="pill green" style="font-size:10px">${originLabel[g.origin]}</span></div>
+     ${r?`<div class="muted" style="font-size:11.5px;margin-top:2px">${IC.pin} ${r.pref}・${r.name}</div>`:''}
      <p class="muted" style="font-size:12.5px;margin:4px 0 6px">${esc(g.relation)}</p>
+     <div class="glabelsm">できること</div>
      <div>${g.spec.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
-     <div class="langlabel">話せる言語</div>
+     <div class="glabelsm" style="margin-top:6px">話せる言語</div>
      ${langChips(g.langs)}
      ${g.lang_note?`<p class="langnote">${esc(g.lang_note)}</p>`:''}
-     <button class="btn sm" data-act="apply" data-guide="${g.id}" style="margin-top:10px">交流を申し込む <span class="demo">デモ</span></button>
+     <button class="btn sm" data-act="apply" data-guide="${g.id}" style="margin-top:10px">メッセージで相談する <span class="demo">デモ</span></button>
    </div>
  </div>`;
+}
+/* ===== guide search ===== */
+function openGuideSearch(){
+ let list=S.guides.slice();
+ if(searchRegion!=='all')list=list.filter(g=>g.region===searchRegion);
+ if(searchLang!=='all')list=list.filter(g=>(g.langs||[]).some(l=>searchLang==='English'?/English|英語/.test(l):/日本語/.test(l)));
+ const regOpts=[['all','すべての地域']].concat(S.regions.map(r=>[r.id,r.name]));
+ const langOpts=[['all','言語すべて'],['日本語','日本語'],['English','English']];
+ const html=`
+  <button class="x" data-close>×</button>
+  <div class="eyebrow" style="margin-top:6px">${IC.search} ガイドを探す</div>
+  <h2 style="font-size:21px;margin-top:2px">地域とガイドを検索</h2>
+  <p class="muted" style="font-size:12px;margin:6px 0 0">地域・言語でしぼり込み。対応言語やできることを見て、メッセージで「ガイドをお願いできるか」を相談できます。</p>
+  <div class="glabelsm" style="margin-top:12px">地域</div>
+  <div class="row">${regOpts.map(o=>`<button class="chip ${searchRegion===o[0]?'on':''}" data-gsregion="${o[0]}">${o[1]}</button>`).join('')}</div>
+  <div class="glabelsm" style="margin-top:10px">言語</div>
+  <div class="row">${langOpts.map(o=>`<button class="chip ${searchLang===o[0]?'on':''}" data-gslang="${o[0]}">${o[1]}</button>`).join('')}</div>
+  <div style="margin:14px 0 0;font-size:12px;font-weight:700;color:var(--ink-soft)">${list.length}人のガイド</div>
+  <div style="margin-top:8px">
+    ${list.length?list.map(g=>guideCard(g,true)).join(''):'<p class="muted" style="text-align:center;padding:24px 0;font-size:13px">条件に合うガイドがいません。地域や言語を変えてみてください。</p>'}
+  </div>
+  <p class="muted" style="font-size:11px;margin-top:6px">※ 表示中のガイドはすべてデモ用のサンプルです。</p>
+ `;
+ openSheet(html);
 }
 function boardMini(b){
  return `<button class="card boardmini" data-board="${b.id}">
@@ -578,60 +619,90 @@ function postForm(){
 }
 
 /* ===== MESSAGES (LINE-style: list -> open chat) ===== */
+function partyOf(t){ return t.peer || guide(t.guideId) || {name:'ガイド',img:'',origin:'resident',langs:[]}; }
+function threadById(id){ return S.threads.find(x=>x.id===id); }
+function pendingReqs(){ return (S.requests||[]).filter(x=>x.status!=='accepted'&&x.status!=='declined'); }
 function msgView(){ return openThread?msgChat(openThread):msgList(); }
 function msgList(){
+ const reqs=pendingReqs();
+ const reqSec=reqs.length?`
+   <div class="reqhead">${IC.bell}<span>ガイド依頼（あなたへ）</span><span class="reqbadge">${reqs.length}</span></div>
+   ${reqs.map(reqCard).join('')}
+   <div class="mlabel">メッセージ</div>`:'';
  return `
- <div class="hd">${LOGOG}<div><h1>メッセージ</h1><div class="sub">タップで会話を開きます（デモ・翻訳つき）</div></div></div>
+ <div class="hd">${LOGOG}<div><h1>メッセージ</h1><div class="sub">${reqs.length?'ガイド依頼が届いています':'タップで会話を開きます（デモ・翻訳つき）'}</div></div></div>
  <div class="pad" style="margin-top:8px">
+ ${reqSec}
  ${S.threads.length?`<div class="mlist">${S.threads.map(msgListRow).join('')}</div>`
    :`<div class="card" style="padding:24px;text-align:center;margin-top:8px">
      <p style="font-weight:700">まだやりとりはありません</p>
-     <p class="muted" style="font-size:13px;margin:6px 0 12px">マップやホームからガイドに「交流を申し込む」と、ここにデモのやりとりが表示されます。</p>
-     <button class="btn sm" data-go="map">地域とガイドを探す</button></div>`}
-   <p class="muted" style="font-size:11px;margin-top:10px">※ 送受信・翻訳はデモ表示です。実際の送信や外部サービス連携は行われません。翻訳の文面はサンプルです。</p>
+     <p class="muted" style="font-size:13px;margin:6px 0 12px">ホームの「ガイドを探す」から気になるガイドに「交流を申し込む」と、ここに会話が表示されます。</p>
+     <button class="btn sm" data-act="findGuide">ガイドを探す</button></div>`}
+   <p class="muted" style="font-size:11px;margin-top:10px">※ 送受信・翻訳・依頼はデモ表示です。実際の送信や外部サービス連携は行われません。</p>
+ </div>`;
+}
+function reqCard(rq){
+ const r=region(rq.region);
+ return `<div class="card reqcard">
+   <div class="reqtop">
+     ${avatar(rq.img,rq.name,'sm')}
+     <div style="flex:1;min-width:0">
+       <div style="font-weight:700;font-size:14px">${esc(rq.name)} <span class="pill green" style="font-size:9px">${originLabel[rq.origin]||''}</span></div>
+       <div class="muted" style="font-size:11px">${r?r.pref+'・'+r.name:''}のガイドを希望</div>
+     </div>
+   </div>
+   ${langChips(rq.langs)}
+   <p style="font-size:13px;margin:8px 0 0">${esc(rq.text)}</p>
+   ${rq.en?`<button class="trbtn" data-tr="rqtr-${rq.id}">${IC.globe} 翻訳を表示</button>
+     <div class="trtext" id="rqtr-${rq.id}"><span class="muted" style="font-size:11px;font-weight:700">English（自動翻訳）</span><br>${esc(rq.en)}</div>`:''}
+   <div class="row" style="margin-top:10px;gap:8px">
+     <button class="btn sm" data-reqok="${rq.id}">承認して会話を始める</button>
+     <button class="btn ghost sm" data-reqng="${rq.id}" style="color:var(--shu);border-color:var(--shu)">お断り</button>
+   </div>
  </div>`;
 }
 function msgListRow(t){
- const g=guide(t.guideId);const r=region(t.region);
+ const p=partyOf(t);const r=region(t.region);
  const last=t.msgs[t.msgs.length-1]||{};
  const prev=(last.who==='me'?'あなた: ':'')+ (last.text||'');
- return `<button class="mlistrow" data-openmsg="${t.guideId}">
-   ${avatar(g?g.img:'',g?g.name:'ガイド','sm')}
+ return `<button class="mlistrow" data-openmsg="${t.id}">
+   ${avatar(p.img,p.name,'sm')}
    <span class="mlistbody">
-     <span class="mlisttop"><span class="mlistname">${esc(g?g.name:'ガイド')}</span>
+     <span class="mlisttop"><span class="mlistname">${esc(p.name)}</span>
        <span class="muted mlistloc">${r?r.pref+'・'+r.name:''}</span></span>
      <span class="muted mlistprev">${esc(prev)}</span>
    </span>
    <svg viewBox="0 0 24 24" class="i mlistchev"><path d="M9 6l6 6-6 6"/></svg>
  </button>`;
 }
-function msgChat(gid){
- const t=S.threads.find(x=>x.guideId===gid);if(!t)return msgList();
- const g=guide(gid);const r=region(t.region);
+function msgChat(id){
+ const t=threadById(id);if(!t)return msgList();
+ const p=partyOf(t);const r=region(t.region);
+ const enOk=(p.langs||[]).some(l=>/English|英語/.test(l));
  return `<div class="chatwrap">
  <div class="chathd">
    <button class="chatback" data-msgback aria-label="戻る"><svg viewBox="0 0 24 24" class="i"><path d="M15 6l-6 6 6 6"/></svg></button>
-   ${avatar(g?g.img:'',g?g.name:'ガイド','sm')}
+   ${avatar(p.img,p.name,'sm')}
    <div style="flex:1;min-width:0">
-     <div style="font-weight:700;font-size:15px;line-height:1.2">${esc(g?g.name:'ガイド')}</div>
-     <div class="muted" style="font-size:11px">${r?r.pref+'・'+r.name:''}${g?'　'+originLabel[g.origin]:''}</div>
+     <div style="font-weight:700;font-size:15px;line-height:1.2">${esc(p.name)}</div>
+     <div class="muted" style="font-size:11px">${r?r.pref+'・'+r.name:''}${p.origin?'　'+(originLabel[p.origin]||''):''}</div>
    </div>
    <button class="chattr ${autoTr?'on':''}" data-autotr aria-label="メッセージをすべて翻訳">${IC.globe}<span>翻訳</span></button>
  </div>
  <div class="chatscroll" id="chatscroll">
    <div class="chatdaysep"><span>${autoTr?'翻訳表示中（デモ・自動翻訳）':'デモの会話'}</span></div>
-   ${t.msgs.map((m,i)=>bubble(gid,i,m,g)).join('')}
+   ${t.msgs.map((m,i)=>bubble(t.id,i,m,p)).join('')}
  </div>
  <div class="chatin">
-   <input id="mi-${gid}" placeholder="メッセージを入力（デモ）" autocomplete="off">
-   <button class="chatsend" data-send="${gid}" aria-label="送信"><svg viewBox="0 0 24 24" class="i"><path d="M4 10.5h9.5V6l6.5 6-6.5 6v-4.5H4z"/></svg></button>
+   <input id="mi-${t.id}" placeholder="メッセージを入力（デモ）" autocomplete="off">
+   <button class="chatsend" data-send="${t.id}" aria-label="送信"><svg viewBox="0 0 24 24" class="i"><path d="M4 10.5h9.5V6l6.5 6-6.5 6v-4.5H4z"/></svg></button>
  </div>
  </div>`;
 }
-function bubble(gid,i,m,g){
+function bubble(tid,i,m,g){
  const mine=m.who==='me';
- const trId=`tr-${gid}-${i}`;
- const av=(!mine&&g)?`<img class="bubav" src="${g.img}" alt="" loading="lazy">`:'';
+ const trId=`tr-${tid}-${i}`;
+ const av=(!mine&&g&&g.img)?`<img class="bubav" src="${g.img}" alt="" loading="lazy">`:'';
  const show=autoTr&&!!m.en;
  const tr=m.en?`<button class="trbtn" data-tr="${trId}">${IC.globe} ${show?'翻訳を隠す':'翻訳を表示'}</button>
      <div class="trtext ${show?'show':''}" id="${trId}"><span class="muted" style="font-size:11px;font-weight:700">English（自動翻訳）</span><br>${esc(m.en)}</div>`:'';
@@ -757,13 +828,34 @@ function applyGuide(gid){
  const g=guide(gid);if(!g)return;
  const r=region(g.region);
  if(r.status==='new'){r.status='learning';r.reflection=r.reflection||{};}
- if(!S.threads.find(t=>t.guideId===gid)){
-   S.threads.unshift({guideId:gid,region:g.region,msgs:[
-     {who:'me',text:`${r.name}のこと、ぜひ教えてください。`},
-     {who:'them',text:`ようこそ！${r.name}へ。一緒にまちを歩きましょう。まず何が気になりますか？`}
+ const tid='t-'+gid;
+ if(!threadById(tid)){
+   S.threads.unshift({id:tid,guideId:gid,region:g.region,msgs:[
+     {who:'me',text:`${r.name}のガイドをお願いできますか？${g.spec[0]}に興味があります。`,
+      en:`Could you be my guide in ${r.name}? I’m interested in ${g.spec[0]}.`},
+     {who:'them',text:`ようこそ！ぜひ案内します。まず何が気になりますか？対応言語：${g.langs.join('・')}。翻訳機も使えます。`,
+      en:`Welcome! I’d be glad to guide you. What are you most curious about? Languages: ${g.langs.join(', ')}. A translation device is fine too.`}
    ]});
  }
- save();closeSheet();toast('交流を申し込みました（デモ）。メッセージへ');openThread=gid;go('msg',true);
+ save();closeSheet();toast('交流を申し込みました（デモ）。メッセージへ');openThread=tid;go('msg',true);
+}
+function acceptReq(id){
+ const rq=(S.requests||[]).find(x=>x.id===id);if(!rq)return;
+ rq.status='accepted';
+ const tid='t-'+rq.id;
+ if(!threadById(tid)){
+   S.threads.unshift({id:tid,region:rq.region,peer:{name:rq.name,img:rq.img,origin:rq.origin,langs:rq.langs},
+     msgs:[
+       {who:'them',text:rq.text,en:rq.en},
+       {who:'me',text:'ご依頼ありがとうございます。喜んで案内します。日程を決めましょう。',
+        en:'Thank you for your request. I’d be happy to guide you. Let’s set a date.'}
+     ]});
+ }
+ save();closeSheet();toast('依頼を承認しました。会話を始めます（デモ）');openThread=tid;go('msg',true);
+}
+function declineReq(id){
+ const rq=(S.requests||[]).find(x=>x.id===id);if(!rq)return;
+ rq.status='declined';save();render();toast('依頼をお断りしました（デモ）');
 }
 function certify(id){const r=region(id);r.status='certified';save();closeSheet();
  setTimeout(()=>{go('map');toast(IC.starF+' ふるさと認定！地図の目印が金色になりました');},60);}
@@ -781,7 +873,7 @@ $('#app').addEventListener('click',e=>{
  const act=t.closest('[data-act]');
  if(act){
    const a=act.dataset.act, rid=act.dataset.region;
-   if(a==='findGuide'){go('map');return;}
+   if(a==='findGuide'){openGuideSearch();return;}
    if(a==='boardRegion'){boardRegion=rid;boardType='all';closeSheet();go('board');return;}
    if(a==='apply'){applyGuide(act.dataset.guide);return;}
    if(a==='certify'){certify(rid);return;}
@@ -808,13 +900,17 @@ $('#app').addEventListener('click',e=>{
  const jn=t.closest('[data-join]'); if(jn){const id=jn.dataset.join;if(!S.joined.includes(id))S.joined.push(id);save();
    toast('参加を希望しました（デモ）');if($('#sheet').classList.contains('open'))openBoard(id);else render();return;}
  const btype=t.closest('[data-btype]'); if(btype){boardType=btype.dataset.btype;render();return;}
+ const rok=t.closest('[data-reqok]'); if(rok){acceptReq(rok.dataset.reqok);return;}
+ const rng=t.closest('[data-reqng]'); if(rng){declineReq(rng.dataset.reqng);return;}
+ const gs=t.closest('[data-gsregion]'); if(gs){searchRegion=gs.dataset.gsregion;openGuideSearch();return;}
+ const gl=t.closest('[data-gslang]'); if(gl){searchLang=gl.dataset.gslang;openGuideSearch();return;}
  const om=t.closest('[data-openmsg]'); if(om){openThread=om.dataset.openmsg;autoTr=false;render();return;}
  if(t.closest('[data-msgback]')){openThread=null;autoTr=false;render();return;}
  const send=t.closest('[data-send]'); if(send){sendMsg(send.dataset.send);return;}
 });
-function sendMsg(gid){
- const inp=$('#mi-'+gid);if(!inp)return;const v=(inp.value||'').trim();if(!v)return;
- const th=S.threads.find(x=>x.guideId===gid);if(!th)return;
+function sendMsg(tid){
+ const inp=$('#mi-'+tid);if(!inp)return;const v=(inp.value||'').trim();if(!v)return;
+ const th=threadById(tid);if(!th)return;
  th.msgs.push({who:'me',text:v});
  th.msgs.push({who:'them',text:'（デモ返信）ありがとうございます！当日を楽しみにしています。',
    en:'(demo reply) Thank you! I’m looking forward to the day.'});
