@@ -26,30 +26,30 @@ const LOGOG=`<span style="color:var(--green)" class="logo">${IC.logo}</span>`;
 
 /* ---------- seed data ---------- */
 function seed(){return{
- version:9,
+ version:10,
  regions:[
-  {id:'otari',name:'小谷村',pref:'長野県',prefId:'nagano',status:'certified',photo:'/events/event-1.png',
+  {id:'otari',name:'小谷村',pref:'長野県',prefId:'nagano',status:'certified',stamps:3,photo:'/events/event-1.png',
    blurb:'雪国の里山。田んぼの畦道と山の恵み、湯けむりの暮らし。',
    theme:['自然','暮らし','祭り'],
    reflection:{culture:true,life:true,manner:true,nature:true},
    experiences:['山口さんと畦道さんぽ','郷土料理づくりを教わった','雪囲いの意味を聞いた']},
-  {id:'noto',name:'能登町',pref:'石川県',prefId:'ishikawa',status:'learning',photo:'/events/event-2.png',
+  {id:'noto',name:'能登町',pref:'石川県',prefId:'ishikawa',status:'learning',stamps:2,photo:'/events/event-2.png',
    blurb:'海と発酵食の町。朝市の賑わいと、移住者が見つけた能登。',
    theme:['食','自然','暮らし'],
    reflection:{culture:true,life:true,manner:false,nature:false},
    experiences:['朝市を一緒に歩いた']},
-  {id:'miyama',name:'南丹市美山町',pref:'京都府',prefId:'kyoto',status:'learning',photo:'/events/event-3.png',
+  {id:'miyama',name:'南丹市美山町',pref:'京都府',prefId:'kyoto',status:'learning',stamps:1,photo:'/events/event-3.png',
    blurb:'かやぶきの里。囲炉裏を囲む夜、暮らしと文化の語らい。',
    theme:['文化','暮らし','自然'],
    reflection:{culture:true,life:false,manner:true,nature:false},
    experiences:['囲炉裏で暮らしトーク']},
-  {id:'yame',name:'八女市',pref:'福岡県',prefId:'fukuoka',status:'new',photo:'/events/yame.png',
+  {id:'yame',name:'八女市',pref:'福岡県',prefId:'fukuoka',status:'new',stamps:0,photo:'/events/yame.png',
    blurb:'八女茶の里。茶畑と、近隣から通う学生ガイドの案内。',
    theme:['食','自然','文化'],reflection:{},experiences:[]},
-  {id:'higashikawa',name:'東川町',pref:'北海道',prefId:'hokkaido',status:'new',photo:'/events/higashikawa.png',
+  {id:'higashikawa',name:'東川町',pref:'北海道',prefId:'hokkaido',status:'new',stamps:0,photo:'/events/higashikawa.png',
    blurb:'大雪山の水と写真の町。移住者が語る北の暮らし。',
    theme:['自然','暮らし'],reflection:{},experiences:[]},
-  {id:'shimanto',name:'四万十町',pref:'高知県',prefId:'kochi',status:'new',photo:'/events/shimanto.png',
+  {id:'shimanto',name:'四万十町',pref:'高知県',prefId:'kochi',status:'new',stamps:0,photo:'/events/shimanto.png',
    blurb:'清流四万十。沈下橋と川の恵み、家庭の味。',
    theme:['自然','食'],reflection:{},experiences:[]}
  ],
@@ -136,9 +136,9 @@ function seed(){return{
 }}
 
 /* ---------- state / storage ---------- */
-const KEY='furusato-match-v9';
+const KEY='furusato-match-v10';
 let S=load();
-function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===9){if(o.me&&!o.me.img)o.me.img='/people/me.png';return o;}}}catch(e){}return seed();}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.version===10){if(o.me&&!o.me.img)o.me.img='/people/me.png';return o;}}}catch(e){}return seed();}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function resetAll(){S=seed();save();go('home');toast('デモを初期状態に戻しました');}
 
@@ -158,6 +158,18 @@ const statusColor={certified:'var(--gold)',learning:'var(--shu)',new:'var(--surf
 let toastT;
 function toast(m){const t=$('#toast');t.innerHTML=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2100);}
 function avatar(src,alt,cls){return src?`<img class="avatar ${cls||''}" src="${src}" alt="${esc(alt||'')}" loading="lazy">`:`<span class="avatar ph ${cls||''}">${IC.pin}</span>`;}
+/* ---- ふるさとスタンプ (pin+house rubber-stamp, resembles app icon) ---- */
+const STAMP_MAX=3;
+const STAMP_PIN='M12 2C7.9 2 4.5 5.4 4.5 9.5c0 5.3 7.5 12 7.5 12s7.5-6.7 7.5-12C19.5 5.4 16.1 2 12 2zM12 6.2 8.4 9.1V13h7.2V9.1L12 6.2z';
+function stampSVG(filled){
+ return filled
+  ? `<span class="stamp on"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="var(--gold-tint)" stroke="var(--gold-deep)" stroke-width="1.7"/><circle cx="20" cy="20" r="14.3" fill="none" stroke="var(--gold-deep)" stroke-width="0.8" stroke-dasharray="1.6 1.6" opacity=".75"/><g transform="translate(20 21) scale(0.8) translate(-12 -12)"><path d="${STAMP_PIN}" fill="var(--gold-deep)"/></g></svg></span>`
+  : `<span class="stamp"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="var(--line)" stroke-width="1.7" stroke-dasharray="3 3"/><g transform="translate(20 21) scale(0.8) translate(-12 -12)"><path d="${STAMP_PIN}" fill="var(--line)" opacity=".85"/></g></svg></span>`;
+}
+function stampRow(n,showCount){n=Math.max(0,Math.min(STAMP_MAX,n||0));
+ return `<span class="stamprow">${[0,1,2].map(i=>stampSVG(i<n)).join('')}${showCount?`<span class="stampcount">${n}/${STAMP_MAX}</span>`:''}</span>`;}
+function stampMini(n){n=Math.max(0,Math.min(STAMP_MAX,n||0));
+ return `<span class="stampmini">${[0,1,2].map(i=>`<i class="${i<n?'on':''}"></i>`).join('')}<span>${n}/${STAMP_MAX}</span></span>`;}
 /* ---- language helpers ---- */
 const langCls=l=>/日本語/.test(l)?'ja':/English|英語/.test(l)?'en':/Français|フランス/.test(l)?'fr':'ot';
 function langChips(langs,translator){
@@ -237,7 +249,7 @@ function homeView(){
      ${[
        ['1','地域や人を見つける','地域・関心・対応言語から、地域とふるさとガイドを探します。'],
        ['2','マッチングして地域を知る','一緒にまちを歩き、名所だけでなくマナー・文化・暮らし・自然を知ります。'],
-       ['3','体験を重ね、ふるさと認定','振り返りで理解を確かめ、地域ごとに“ふるさと認定”を受けられます。'],
+       ['3','スタンプを3つ集めて認定','ガイドと交流して“ふるさとスタンプ”を3つ集めると、その地域が“ふるさと”になります。'],
        ['4','認定後の二つの過ごし方','ふるさととして楽しむか、希望すればガイドとして案内するか、選べます。']
      ].map(s=>`<div class="step"><div class="n">${s[0]}</div><div><div style="font-weight:700">${s[1]}</div>
        <div class="muted" style="font-size:12.5px">${s[2]}</div></div></div>`).join('')}
@@ -288,7 +300,7 @@ function regionRow(r){
  return `<button class="card rowcard" data-region="${r.id}">
    ${thumb}
    <span class="rowbody">
-     <span class="pill ${statusMeta[r.status].cls}" style="font-size:10px">${statusMeta[r.status].t}</span>
+     <span class="rowtop"><span class="pill ${statusMeta[r.status].cls}" style="font-size:10px">${statusMeta[r.status].t}</span>${stampMini(r.stamps)}</span>
      <span class="rowtitle">${r.pref}・${r.name}</span>
      <span class="muted rowsub">${esc(r.blurb)}</span>
      ${g?`<span class="muted rowguide">${avatar(g.img,g.name,'xs')}<span>${esc(g.name)}／${originLabel[g.origin]}</span></span>`:''}
@@ -407,32 +419,28 @@ function openRegion(id){
  const st=statusMeta[r.status];
  const hero=r.photo?`<div class="rhero" style="background-image:url('${r.photo}')"></div>`
    :`<div class="rhero grad"></div>`;
+ const sn=r.stamps||0;
  let cert='';
  if(r.status==='certified'){
-   cert=`<div class="card" style="padding:14px;background:var(--gold-tint);border-color:var(--gold)">
+   cert=`<div class="card stampcard gold">
      <div class="pill gold">${IC.starF} ふるさと認定済み</div>
-     <p style="font-size:13px;margin:8px 0 10px">この地域はあなたの“ふるさと”です。認定後の過ごし方を選べます。</p>
+     <p style="font-size:13px;margin:8px 0 10px">ガイドからスタンプを3つ集めました。この地域はあなたの“ふるさと”です。</p>
+     <div class="stampbox">${stampRow(3)}</div>
+     <p class="muted" style="font-size:12px;margin:10px 0 10px">認定後の過ごし方を選べます。</p>
      <div class="two">
        <button class="btn sm block" data-act="enjoy" data-region="${id}">ふるさととして楽しむ</button>
        <button class="btn ghost sm block" data-act="aimGuide" data-region="${id}">ガイドとして案内する</button>
      </div>
      <p class="muted" style="font-size:11px;margin-top:8px">イベント参加は任意です。ガイドとして案内するのは、希望する人だけです。</p>
    </div>`;
- }else if(r.status==='learning'){
-   const rf=r.reflection||{};const items=[['culture','文化'],['life','暮らし'],['manner','マナー'],['nature','自然']];
-   const done=items.filter(i=>rf[i[0]]).length;
-   cert=`<div class="card" style="padding:14px;background:var(--shu-tint);border-color:transparent">
-     <div class="pill learn">交流・学習中</div>
-     <p style="font-size:13px;margin:8px 0 8px">ガイドとの振り返りで、4つの理解を確かめます（${done}/4）。</p>
-     <div class="row" style="gap:6px">${items.map(i=>`<span class="chip ${rf[i[0]]?'on':''}" data-toggle="${i[0]}" data-region="${id}">${rf[i[0]]?IC.check+' ':''}${i[1]}</span>`).join('')}</div>
-     <p class="muted" style="font-size:11px;margin:8px 0 10px">※ 認定基準はデモ上の仮設定です。実運用では地域と調整します。訪問回数やお気に入りだけでは認定しません。</p>
-     <button class="btn gold block" data-act="certify" data-region="${id}" ${done<4?'disabled style="opacity:.5"':''}>
-       ${done<4?'4つの振り返りで認定できます':'ふるさと認定を受ける'}</button>
-   </div>`;
  }else{
-   cert=`<div class="card" style="padding:14px">
-     <div class="pill new">これから知る地域</div>
-     <p style="font-size:13px;margin:8px 0 10px">まずはガイドと出会って、地域を知るところから。交流を申し込むと“学習中”になります。</p>
+   const learning=r.status==='learning';
+   cert=`<div class="card stampcard ${learning?'learn':''}">
+     <div class="pill ${learning?'learn':'new'}">${learning?'ふるさとスタンプ 集め中':'これから知る地域'}</div>
+     <p style="font-size:13px;margin:8px 0 10px">ガイドと交流して<b>ふるさとスタンプを3つ</b>集めると、この地域が“ふるさと”になります。</p>
+     <div class="stampbox">${stampRow(sn,true)}</div>
+     <button class="btn gold block" data-act="stampGet" data-region="${id}" style="margin-top:12px">${IC.starF} ガイドからスタンプをもらう <span class="demo">デモ</span></button>
+     <p class="muted" style="font-size:11px;margin-top:8px">${sn>=STAMP_MAX-1?'あと1つで“ふるさと認定”です。':'スタンプはガイドとの交流・体験で1つずつ増えます。'}実運用では地域と基準を調整します。</p>
    </div>`;
  }
  const html=`
@@ -444,6 +452,10 @@ function openRegion(id){
       <span class="pill ${st.cls}" style="font-size:11px;vertical-align:middle">${st.t}</span></h2>
     <p class="muted" style="font-size:13px;margin:6px 0 0">${esc(r.blurb)}</p>
     <div style="margin-top:6px">${r.theme.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+  </div>
+  <div class="stampstrip">
+    <div class="stampstriptop"><span>この地域のふるさとスタンプ</span><span class="stampcount">${sn}/${STAMP_MAX}</span></div>
+    ${stampRow(sn)}
   </div>
   ${(()=>{const ls=[...new Set(guidesOf(id).flatMap(g=>g.langs||[]))];return ls.length?`
   <div class="langbox">
@@ -727,7 +739,7 @@ function pgridCell(r){
  const cert=r.status==='certified';
  const bg=r.photo?`background-image:url('${r.photo}')`:'background:linear-gradient(135deg,var(--green),var(--green-tint))';
  return `<button class="pcell ${cert?'cert':'prog'}" data-region="${r.id}" style="${bg}">
-   <span class="pcellbadge ${cert?'gold':'prog'}">${cert?IC.starF+' 認定済み':'進行中'}</span>
+   <span class="pcellbadge ${cert?'gold':'prog'}">${cert?IC.starF+' 認定済み':(r.stamps||0)+'/'+STAMP_MAX}</span>
    <span class="pcellname">${esc(r.name)}</span>
  </button>`;
 }
@@ -857,8 +869,14 @@ function declineReq(id){
  const rq=(S.requests||[]).find(x=>x.id===id);if(!rq)return;
  rq.status='declined';save();render();toast('依頼をお断りしました（デモ）');
 }
-function certify(id){const r=region(id);r.status='certified';save();closeSheet();
- setTimeout(()=>{go('map');toast(IC.starF+' ふるさと認定！地図の目印が金色になりました');},60);}
+function certify(id){const r=region(id);r.status='certified';r.stamps=STAMP_MAX;save();closeSheet();
+ setTimeout(()=>{go('map');toast(IC.starF+' スタンプ3つで“ふるさと認定”！地図の目印が金色になりました');},60);}
+function stampGet(id){const r=region(id);if(!r)return;
+ r.stamps=Math.min(STAMP_MAX,(r.stamps||0)+1);
+ if(r.status==='new')r.status='learning';
+ save();
+ if(r.stamps>=STAMP_MAX){certify(id);return;}
+ openRegion(id);toast(IC.starF+' ふるさとスタンプを1つ集めました（'+r.stamps+'/'+STAMP_MAX+'）');}
 
 /* ---------- event delegation ---------- */
 $('#app').addEventListener('click',e=>{
@@ -877,6 +895,7 @@ $('#app').addEventListener('click',e=>{
    if(a==='boardRegion'){boardRegion=rid;boardType='all';closeSheet();go('board');return;}
    if(a==='apply'){applyGuide(act.dataset.guide);return;}
    if(a==='certify'){certify(rid);return;}
+   if(a==='stampGet'){stampGet(rid);return;}
    if(a==='enjoy'){S.goalGuide[rid]=false;save();toast('「ふるさととして楽しむ」を選びました');closeSheet();return;}
    if(a==='aimGuide'){S.goalGuide[rid]=true;save();toast('「ガイドとして案内する」を選びました（希望制）');closeSheet();return;}
    if(a==='postForm'){postForm();return;}

@@ -312,3 +312,25 @@ a{color:var(--green-deep)}
 .hdbtn .i{width:19px;height:19px}
 .hdbtn:active{transform:scale(.95)}
 .glabelsm{font-size:11px;font-weight:700;color:var(--ink-soft);margin-bottom:4px}
+
+/* ===== ふるさとスタンプ ===== */
+.stamprow{display:inline-flex;align-items:center;gap:8px}
+.stamp{width:44px;height:44px;flex:0 0 auto;display:inline-block}
+.stamp svg{width:100%;height:100%;display:block}
+.stamp.on{filter:drop-shadow(0 1px 2px rgba(167,126,34,.35))}
+.stampcount{font-family:"Zen Maru Gothic";font-weight:700;font-size:15px;color:var(--gold-deep);margin-left:4px}
+.stampbox{display:flex;justify-content:center;padding:6px 0 2px}
+.stampcard{padding:14px}
+.stampcard.gold{background:var(--gold-tint);border-color:var(--gold)}
+.stampcard.learn{background:var(--shu-tint);border-color:transparent}
+/* strip under region header */
+.stampstrip{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--surface-2);
+  display:flex;flex-direction:column;gap:8px;align-items:center}
+.stampstriptop{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:12px;font-weight:700;color:var(--ink-soft)}
+.stampstriptop .stampcount{font-size:14px}
+/* mini stamps in region rows */
+.rowtop{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.stampmini{display:inline-flex;align-items:center;gap:3px;flex:0 0 auto}
+.stampmini i{width:9px;height:9px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:inline-block}
+.stampmini i.on{background:var(--gold);border-color:var(--gold-deep)}
+.stampmini span{font-size:10px;font-weight:700;color:var(--ink-soft);margin-left:2px}
