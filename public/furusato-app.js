@@ -56,13 +56,13 @@ function seed(){return{
  guides:[
   {id:'g1',region:'otari',name:'山口 誠',origin:'resident',img:'/guides/guide-1.png',langs:['日本語'],
    spec:['里山の歩き方','郷土料理','地域のマナー'],relation:'この谷で生まれ育って60年。',
-   lang_note:'日本語のみですが、翻訳機の使い方も一緒に練習しながら案内します。どの国の方も大歓迎です。'},
+   lang_note:'日本語のみ対応で、英語などは話せません。翻訳機を通せば、言葉が違う方とも安心してやりとりできます。'},
   {id:'g2',region:'noto',name:'田村 さやか',origin:'other',img:'/guides/guide-2.png',langs:['日本語','English'],
    spec:['朝市めぐり','発酵食','暮らし'],relation:'東京から移住して7年。よそ者だった私だから話せる能登。',
    lang_note:'英語もOK。練習中の方は、ぜひ気軽に英語で話しかけてください。'},
   {id:'g3',region:'miyama',name:'小林 久子',origin:'resident',img:'/guides/guide-4.png',langs:['日本語'],
    spec:['囲炉裏の暮らし','季節の行事','家庭料理'],relation:'美山で三世代。おかえりと言える家です。',
-   lang_note:'日本語のみ。翻訳機を使えば言葉が違っても大丈夫。ゆっくりお話しします。'},
+   lang_note:'日本語のみ対応です。英語などは話せませんが、翻訳機を通せば言葉が違っても大丈夫。ゆっくりお話しします。'},
   {id:'g4',region:'miyama',name:'Marie（マリー）',origin:'overseas',img:'/people/emma.png',langs:['日本語','English','Français'],
    spec:['文化の背景を通訳','写真さんぽ'],relation:'フランス出身。美山に暮らして4年、学んだ文化を母語でも伝えます。',
    lang_note:'英語・フランス語で、文化の背景まで母語で通訳できます。'},
@@ -235,7 +235,7 @@ function homeView(){
      <p style="margin:7px 0 10px;font-size:13.5px">「何語を話せるか」をプロフィールに表示。イベントも“何語で行うか”がわかります。
      翻訳機で全言語に対応するので、言葉が違っても参加できます。</p>
      <div class="langfeat">
-       <div><span class="lang ja">日本語のみ</span><p>ガイドが翻訳機の使い方を一緒に練習。どの国の人とも交流できます。</p></div>
+       <div><span class="lang ja">日本語のみ対応</span><p>英語などは話せないガイドとも、翻訳機を通して交流できます。日本語だけの交流も歓迎です。</p></div>
        <div><span class="lang en">${IC.globe} 英語を話したい</span><p>英語対応のガイドや参加者と、積極的に英語で話せます。</p></div>
        <div><span class="lang tr">${IC.globe} 翻訳機で全言語対応</span><p>対応言語がなくても、翻訳機を介してその場で会話できます。</p></div>
      </div>
