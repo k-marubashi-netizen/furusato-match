@@ -232,13 +232,15 @@ function homeView(){
  <div class="pad" style="margin-top:14px">
    <div class="card langcard">
      <div class="eyebrow" style="color:var(--blue)">${IC.globe} 言語の壁を越える</div>
-     <p style="margin:7px 0 10px;font-size:13.5px">「何語を話せるか」をプロフィールに表示。イベントも“何語で行うか”がわかります。
-     翻訳機で全言語に対応するので、言葉が違っても参加できます。</p>
-     <div class="langfeat">
-       <div><span class="lang ja">日本語のみ対応</span><p>英語などは話せないガイドとも、翻訳機を通して交流できます。日本語だけの交流も歓迎です。</p></div>
-       <div><span class="lang en">${IC.globe} 英語を話したい</span><p>英語対応のガイドや参加者と、積極的に英語で話せます。</p></div>
-       <div><span class="lang tr">${IC.globe} 翻訳機で全言語対応</span><p>対応言語がなくても、翻訳機を介してその場で会話できます。</p></div>
-     </div>
+     <p style="margin:7px 0 12px;font-size:13.5px">話せる言語をプロフィールやイベントに表示。言葉が違っても、翻訳機で交流できます。</p>
+     <ol class="langlist">
+       <li><span class="li-ic globe">${IC.globe}</span>
+         <div><b>話せる言語がわかる</b><p>プロフィールやイベントに「日本語／English…」を表示。マッチング前に確認できます。</p></div></li>
+       <li><span class="li-ic tr">${IC.globe}</span>
+         <div><b>翻訳機で全言語に対応</b><p>日本語で行うイベントも、基本的に翻訳機を使って全言語に対応。対応言語が合わなくても、その場で会話できます。</p></div></li>
+       <li><span class="li-ic en">EN</span>
+         <div><b>英語で交流したい人も</b><p>英語対応のガイドや参加者となら、積極的に英語で話せます。</p></div></li>
+     </ol>
    </div>
  </div>
 
